@@ -32760,6 +32760,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2059998813990710687}
   - component: {fileID: 5365681431338661861}
+  - component: {fileID: 5365681431338661862}
   m_Layer: 0
   m_Name: NPC_Customer_0
   m_TagString: Untagged
@@ -33818,6 +33819,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1556220425555591433}
+  - component: {fileID: 2221152678396992436}
+  - component: {fileID: 2221152678396992437}
   m_Layer: 0
   m_Name: NPC_Customer_1
   m_TagString: Untagged
@@ -33825,6 +33828,43 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &2221152678396992436
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2221152678396992435}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: de76d67d0ab88dc439b10b32370775ea, type: 3}
+  m_Controller: {fileID: 9100000, guid: be2761962278e0249b5947efd83508b9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2221152678396992437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2221152678396992435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7611a9f0c84441aa7129a54ce7449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 2221152678396992436}
+  _MaxRandomDelay: 0
+  _CurRandomDelay: 0
 --- !u!1 &2237359016994170893
 GameObject:
   m_ObjectHideFlags: 0
@@ -34362,7 +34402,7 @@ Animator:
   m_GameObject: {fileID: 9223081989926052550}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: de76d67d0ab88dc439b10b32370775ea, type: 3}
-  m_Controller: {fileID: 9100000, guid: fecf6d756e0aaae41ada7c746eed59b9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1e7b77e15098ef241bb6fb4ff1d20c7b, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -37659,7 +37699,7 @@ Animator:
   m_GameObject: {fileID: 7324863872567655782}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: de76d67d0ab88dc439b10b32370775ea, type: 3}
-  m_Controller: {fileID: 9100000, guid: fecf6d756e0aaae41ada7c746eed59b9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1bd398aefda2c56488f531766274cdb3, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -40317,7 +40357,7 @@ Animator:
   m_GameObject: {fileID: 1719608342962517797}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: a2a3766e0a1715248adebfe632053a61, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: be2761962278e0249b5947efd83508b9, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -40329,6 +40369,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5365681431338661862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719608342962517797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7611a9f0c84441aa7129a54ce7449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 5365681431338661861}
+  _MaxRandomDelay: 0
+  _CurRandomDelay: 0
 --- !u!1 &5365911847064918185
 GameObject:
   m_ObjectHideFlags: 0
@@ -43395,6 +43450,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6243709956391210226}
+  - component: {fileID: 6768291985669543497}
+  - component: {fileID: 6768291985669543498}
   m_Layer: 0
   m_Name: NPC_Merchant_2
   m_TagString: Untagged
@@ -43402,6 +43459,43 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &6768291985669543497
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6768291985669543496}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 1841c298173cdad4db8df8602c8f1c8d, type: 3}
+  m_Controller: {fileID: 9100000, guid: 1bd398aefda2c56488f531766274cdb3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6768291985669543498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6768291985669543496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7611a9f0c84441aa7129a54ce7449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 6768291985669543497}
+  _MaxRandomDelay: 0
+  _CurRandomDelay: 0
 --- !u!4 &6783263758370498245
 Transform:
   m_ObjectHideFlags: 0
@@ -44633,6 +44727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7993032057654405084}
   - component: {fileID: 4038841122849635750}
+  - component: {fileID: 7993032057654405085}
   m_Layer: 0
   m_Name: NPC_Merchant_0
   m_TagString: Untagged
@@ -44902,6 +44997,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7807565369005225609}
+  - component: {fileID: 7807565369005225610}
+  - component: {fileID: 7807565369005225611}
   m_Layer: 0
   m_Name: NPC_Merchant_4
   m_TagString: Untagged
@@ -45620,6 +45717,43 @@ Transform:
   - {fileID: 2852796749908366696}
   m_Father: {fileID: 1872674979}
   m_LocalEulerAnglesHint: {x: 0, y: 148.38, z: 0}
+--- !u!95 &7807565369005225610
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7426959130092563507}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: de76d67d0ab88dc439b10b32370775ea, type: 3}
+  m_Controller: {fileID: 9100000, guid: 1bd398aefda2c56488f531766274cdb3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7807565369005225611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7426959130092563507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7611a9f0c84441aa7129a54ce7449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 7807565369005225610}
+  _MaxRandomDelay: 0
+  _CurRandomDelay: 0
 --- !u!4 &7809759675180127086
 Transform:
   m_ObjectHideFlags: 0
@@ -45993,6 +46127,21 @@ Transform:
   - {fileID: 6538593061087026013}
   m_Father: {fileID: 1872674979}
   m_LocalEulerAnglesHint: {x: 0, y: 95.519, z: 0}
+--- !u!114 &7993032057654405085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7324863872567655782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7611a9f0c84441aa7129a54ce7449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 4038841122849635750}
+  _MaxRandomDelay: 0
+  _CurRandomDelay: 0
 --- !u!4 &7993255794279225866
 Transform:
   m_ObjectHideFlags: 0
@@ -46671,15 +46820,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9223081989926052550}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.809714, z: -0, w: -0.5868248}
-  m_LocalPosition: {x: -8.64, y: 0.13000011, z: 3.39}
+  m_LocalRotation: {x: -0, y: -0.3230744, z: -0, w: 0.9463736}
+  m_LocalPosition: {x: -6.1512012, y: 0.33641648, z: -1.8738383}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 144309906917917803}
   - {fileID: 4675971615996626173}
   m_Father: {fileID: 1872674979}
-  m_LocalEulerAnglesHint: {x: 0, y: -71.864, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -25.443, z: 0}
 --- !u!4 &8428521347165166722
 Transform:
   m_ObjectHideFlags: 0
@@ -47163,6 +47312,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8942136019374976146}
+  - component: {fileID: 8942136019374976147}
+  - component: {fileID: 8942136019374976148}
   m_Layer: 0
   m_Name: NPC_Merchant_3
   m_TagString: Untagged
@@ -47836,6 +47987,43 @@ Transform:
   - {fileID: 4023396188707213171}
   m_Father: {fileID: 1872674979}
   m_LocalEulerAnglesHint: {x: 0, y: -87.949, z: 0}
+--- !u!95 &8942136019374976147
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8598227081092036136}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: de76d67d0ab88dc439b10b32370775ea, type: 3}
+  m_Controller: {fileID: 9100000, guid: 1bd398aefda2c56488f531766274cdb3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8942136019374976148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8598227081092036136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7611a9f0c84441aa7129a54ce7449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 8942136019374976147}
+  _MaxRandomDelay: 0
+  _CurRandomDelay: 0
 --- !u!4 &8946476483841731619
 Transform:
   m_ObjectHideFlags: 0
