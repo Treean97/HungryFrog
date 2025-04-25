@@ -6,12 +6,12 @@ public class MainSceneNPCController : MonoBehaviour
     [SerializeField]
     Animator _Animator;
 
+    // 애니메이션 변경을 위한 랜덤 값 최대, 최소 제한
     float _MaxDelaySwitchAni = 10;
     float _MinDelaySwitchAni = 5;
-
-    [SerializeField]
-    float _MaxRandomDelay;
-    [SerializeField]
+        
+    // 애니메이션 변경을 위한 딜레이
+    float _MaxRandomDelay;    
     float _CurRandomDelay;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
