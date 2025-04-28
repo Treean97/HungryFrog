@@ -34,6 +34,9 @@ public class MainSceneManager : MonoBehaviour
 
 
         _SceneChanging = false;
+
+        // Sound
+        SoundManager._Inst.PlayBGM("MainSceneBGM");
     }
 
     // Update is called once per frame
