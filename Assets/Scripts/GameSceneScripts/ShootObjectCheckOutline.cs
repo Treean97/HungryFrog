@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ShootObjectCheckOutline : MonoBehaviour
 {
     GameObject _OutlineShpere; // 외부라인
+    GameObject _ZeroPointSphere; // 중심구
     ShootObjectBasement _ShootObjectBasement;
     float _OutlineRadius;
     float _ObjectRadius;
@@ -26,7 +27,7 @@ public class ShootObjectCheckOutline : MonoBehaviour
         SphereCollider tSphereCollider = GetComponent<SphereCollider>();
         _ObjectRadius = tSphereCollider.radius * transform.localScale.x;
         */
-
+        _ZeroPointSphere = GameObject.FindGameObjectWithTag("ZeroPointSphere");
         _OutlineShpere = GameObject.FindGameObjectWithTag("OutlineSphere");
         _ShootObjectBasement = GetComponent<ShootObjectBasement>();
 
@@ -44,7 +45,7 @@ public class ShootObjectCheckOutline : MonoBehaviour
         //Debug.Log(Vector2.Distance(this.transform.position, Vector3.zero));
 
         // 오브젝트가 원의 크기를 벗어나는지 확인 && 상태가 Stable인지 확인 , * 10은 스케일링
-        if (Vector2.Distance(this.transform.position, Vector3.zero) - _ObjectRadius > _OutlineRadius
+        if (Vector2.Distance(this.transform.position, _ZeroPointSphere.transform.position) - _ObjectRadius > _OutlineRadius
             && _ShootObjectBasement.GetIsStable == true)
         {
             Debug.Log("오브젝트가 원을 벗어났습니다! 게임 종료!");

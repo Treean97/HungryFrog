@@ -55,12 +55,8 @@ public class SlicerThrower : MonoBehaviour
         // 던지기
         tSlicer.GetComponent<ThrowObject>().SetThrowVector(_ThrowVec);
 
-        // 사운드
-        StringBuilder tSB = new StringBuilder();
-        tSB.Append("SlicerThrow_");
-        int tRandom = Random.Range(0, 2);
-        tSB.Append(tRandom.ToString());
-        SoundManager._Inst.PlaySFX("SliceThrow_0");
+        // 사운드 출력
+        SoundManager._Inst.PlayRandomSFX(SoundCategory.ThrowObject);
     }
 
 }

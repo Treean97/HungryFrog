@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CustomGravity : MonoBehaviour
 {
-    public Vector3 _GravityPointTF = Vector3.zero; 
+    public Vector3 _GravityPointTF; 
     public float _GravityForce = 10f;
     public float _Damping;  // 가중치
 
@@ -12,6 +12,7 @@ public class CustomGravity : MonoBehaviour
 
     void Start()
     {
+        _GravityPointTF = GameObject.FindGameObjectWithTag("ZeroPointSphere").transform.position;
         _Rig = this.gameObject.GetComponent<Rigidbody>();        
     }
 

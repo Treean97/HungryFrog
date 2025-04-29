@@ -39,6 +39,7 @@ public class ObjectSlicer : MonoBehaviour
                 Debug.LogError("SlicedHull 객체가 null입니다. SliceObject 메서드가 제대로 작동하지 않았습니다.");
                 return;
             }
+                       
 
             var tUpperHullGO = tSlicedObject.CreateUpperHull(tCollider.gameObject, _SlicedMaterial);
             var tLowerHullGO = tSlicedObject.CreateLowerHull(tCollider.gameObject, _SlicedMaterial);
@@ -46,8 +47,13 @@ public class ObjectSlicer : MonoBehaviour
             tUpperHullGO.transform.position = tCollider.transform.position;
             tLowerHullGO.transform.position = tCollider.transform.position;
 
-            var tVelocity = tCollider.GetComponent<Rigidbody>().linearVelocity;        
+            var tVelocity = tCollider.GetComponent<Rigidbody>().linearVelocity;
 
+            // 잘린 물체가 할 일을 위해 스크립트 할당
+            tUpperHullGO.AddComponent<SlicedObject>();
+            tLowerHullGO.AddComponent<SlicedObject>();
+
+            // 물리력 할당
             ApplyPhysical(tUpperHullGO, tVelocity);
             ApplyPhysical(tLowerHullGO, tVelocity);
 
