@@ -432,7 +432,7 @@ public class ObjectShooter : MonoBehaviour
         {
             var touch = Input.GetTouch(i);
 
-            if (touch.fingerId == GameSceneController.JoystickTouchID)
+            if (touch.fingerId == JoystickController._TouchID)
                 continue; // 조이스틱 터치는 무시
 
             if (_ShootTouchID == -1 && (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved))

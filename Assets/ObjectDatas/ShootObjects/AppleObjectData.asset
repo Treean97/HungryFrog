@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ShootObjectID: 0
   _ShootObjectName: Apple
-  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: d0ae214df1890a74e8ae5213b85cee28,
+  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: f940adddff5bae04097e9dc698544e66,
     type: 3}

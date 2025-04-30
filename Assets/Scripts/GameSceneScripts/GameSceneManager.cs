@@ -45,6 +45,7 @@ public class GameSceneManager : MonoBehaviour
         // Object_A나 B의 ID
         int tObjectID = tObject_A.gameObject.GetComponent<ShootObjectBasement>().GetShootObjectData.GetShootObjectID;
 
+        // 더이상 합쳐질게 없다면 그냥 리턴
         if (tObjectID >= _MaxID)
         {
             return;

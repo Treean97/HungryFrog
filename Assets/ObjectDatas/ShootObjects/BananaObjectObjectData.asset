@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ShootObjectID: 1
   _ShootObjectName: Banana
-  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: d501f39bb536a5f4bae8d6396903b44c,
+  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: 65504d4f291fc8d4b88291c0490f7634,
     type: 3}

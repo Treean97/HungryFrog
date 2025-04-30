@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ShootObjectID: 3
   _ShootObjectName: Cupcake
-  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: e1bd0ce4d5d21494eb843a2748dce58d,
+  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: e7b7cb1ea2e84ce4c8c4f9297a4d25ba,
     type: 3}

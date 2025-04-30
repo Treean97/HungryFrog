@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ShootObjectID: 2
   _ShootObjectName: Burger
-  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: 2695d785eb6b10248a142384904a6730,
+  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: a51d8aa58f496f84cb40e171bcbcabc1,
     type: 3}
