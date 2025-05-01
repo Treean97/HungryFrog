@@ -2,6 +2,7 @@ public enum SoundCategory
 {
     BGM,
     ThrowObject,
-    MainSceneSlicedObjectCollision   
+    MainSceneSlicedObjectCollision,
+    ObjectShoot
     
 }

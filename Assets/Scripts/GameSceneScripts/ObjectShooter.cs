@@ -506,6 +506,9 @@ public class ObjectShooter : MonoBehaviour
 
         _NextObjects.Enqueue(GetRandomObjectInfo());
         _NextObjectsUI.UpdateQueueDisplay(_NextObjects);
+
+        // »ç¿îµå
+        ObjectShootSound();
     }
 
     private ShootChanceInfo GetRandomObjectInfo()
@@ -523,5 +526,11 @@ public class ObjectShooter : MonoBehaviour
         }
 
         return _ObjectShootChance._ShootChances[^1];
+    }
+
+
+    private void ObjectShootSound()
+    {
+        SoundManager._Inst.PlayRandomSFX(SoundCategory.ThrowObject);
     }
 }

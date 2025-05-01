@@ -30,6 +30,8 @@ public class GameSceneManager : MonoBehaviour
     void Start()
     {
         _MaxID = ObjectPoolManager._Inst._Pools.Count - 1;
+
+        SoundManager._Inst.PlayBGM("GameSceneBGM");
     }
 
     // Update is called once per frame
