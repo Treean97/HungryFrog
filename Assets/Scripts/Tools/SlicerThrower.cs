@@ -39,6 +39,7 @@ public class SlicerThrower : MonoBehaviour
         }
     }
 
+    // 터치 및 클릭 감지
     bool IsInputPressed()
     {
         return Input.GetMouseButtonDown(0) ||

@@ -138,7 +138,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource _BGMSource;
 
     [Header("Audio Mixer")]
-    [SerializeField] private AudioMixer _AudioMixer;
+    [SerializeField] public AudioMixer _AudioMixer;
     [SerializeField] private AudioMixerGroup _BGMMixerGroup;
     [SerializeField] private AudioMixerGroup _SFXMixerGroup;
 
@@ -148,6 +148,8 @@ public class SoundManager : MonoBehaviour
     [Header("Sound Source Pool")]
     [SerializeField] private GameObject _AudioSourcePrefab;
     [SerializeField] private int _InitialPoolSize = 10;
+
+
 
     private Dictionary<SoundCategory, Dictionary<string, SoundData>> _SoundCategoryDictionary;
     private List<AudioSource> _SoundSourcePool = new List<AudioSource>();
@@ -312,13 +314,20 @@ public class SoundManager : MonoBehaviour
         _BGMSource.Stop();
     }
 
-    public void SetBGMVolume(float tVolume)
+    public void SetMasterVolume(float value01)
     {
-        _AudioMixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp(tVolume, 0.0001f, 1f)) * 20f);
+        _AudioMixer.SetFloat("Master", Mathf.Log10(Mathf.Clamp(value01, 0.0001f, 1f)) * 20f);
     }
 
-    public void SetSFXVolume(float tVolume)
+    public void SetBGMVolume(float value01)
     {
-        _AudioMixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Clamp(tVolume, 0.0001f, 1f)) * 20f);
+        _AudioMixer.SetFloat("BGM", Mathf.Log10(Mathf.Clamp(value01, 0.0001f, 1f)) * 20f);
     }
+
+    public void SetSFXVolume(float value01)
+    {
+        _AudioMixer.SetFloat("SFX", Mathf.Log10(Mathf.Clamp(value01, 0.0001f, 1f)) * 20f);
+    }
+
+
 }

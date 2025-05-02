@@ -1,8 +1,13 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MainSceneUIManager : MonoBehaviour
 {
+    [SerializeField]
+    SoundManager _SoundManager;
+
+    [Header("Setting UI")]
     [SerializeField]
     GameObject _SettingUI;
 
@@ -17,19 +22,40 @@ public class MainSceneUIManager : MonoBehaviour
     private bool _UIIsRunning = false;
     public bool GetUIIsRunning => _UIIsRunning;
 
+    [Header("Setting UI Panel")]
+    [SerializeField]
+    GameObject[] _SettingUIPanels;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // 위치 초기화
         _SettingUI.transform.localPosition = _SettingUIWaitingPosition;
+
+        // Setting UI 초기화 
+        SettingUIPanelSound();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(_UIIsRunning)
+        {
+            // 터치 사운드
+            if(IsInputPressed())
+            {
+                SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UITouch");
+            }
+        }
     }
 
+    // 터치 및 클릭 감지
+    bool IsInputPressed()
+    {
+        return Input.GetMouseButtonDown(0) ||
+           (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
+    }
 
     // Setting UI
     public void SettingUIOn()
@@ -38,6 +64,9 @@ public class MainSceneUIManager : MonoBehaviour
         {
             _UIIsRunning = true;
             _CurrentCoroutine = StartCoroutine(MoveSettingUI(Vector3.zero));
+
+            // 사운드
+            SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UIPop");
         }
         
     }
@@ -48,6 +77,9 @@ public class MainSceneUIManager : MonoBehaviour
         {
             _UIIsRunning = false;
             _CurrentCoroutine = StartCoroutine(MoveSettingUI(_SettingUIWaitingPosition));
+
+            // 사운드
+            SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UIPop");
         }
         
     }
@@ -70,5 +102,30 @@ public class MainSceneUIManager : MonoBehaviour
         _CurrentCoroutine = null;
     }
 
+    void SettingUIPanelOff()
+    {
+        foreach(var item in _SettingUIPanels)
+        {
+            item.gameObject.SetActive(false);
+        }
+    }
+
+    public void SettingUIPanelSound()
+    {
+        SettingUIPanelOff();
+        _SettingUIPanels[0].SetActive(true);
+    }
+
+    public void SettingUIPanelChallenge()
+    {
+        SettingUIPanelOff();
+        _SettingUIPanels[1].SetActive(true);
+    }
+
+    public void SettingUIInfo()
+    {
+        SettingUIPanelOff();
+        _SettingUIPanels[2].SetActive(true);
+    }
 
 }
