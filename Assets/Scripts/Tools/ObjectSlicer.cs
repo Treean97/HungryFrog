@@ -62,7 +62,10 @@ public class ObjectSlicer : MonoBehaviour
 
             // 일정 시간 이후 조각난 오브젝트 파괴
             StartCoroutine(DestroySlicedObjectCoroutine(tUpperHullGO));
-            StartCoroutine(DestroySlicedObjectCoroutine(tLowerHullGO));            
+            StartCoroutine(DestroySlicedObjectCoroutine(tLowerHullGO));
+
+            // 사운드
+            SoundManager._Inst.PlaySFX(SoundCategory.SFX, "MainSceneObjectSlice");
         }
     }
 

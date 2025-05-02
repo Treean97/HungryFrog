@@ -15,4 +15,4 @@ MonoBehaviour:
   _SoundName: ObjectShoot_1
   _Clip: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
   _Volume: 1
-  _Category: 3
+  _Category: 4

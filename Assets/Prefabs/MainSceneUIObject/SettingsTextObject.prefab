@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 8702653013858925536}
   - component: {fileID: 4111361463260215875}
   - component: {fileID: 1890616551428228467}
-  - component: {fileID: 8156053170909942236}
+  - component: {fileID: 4668040574355941127}
+  - component: {fileID: 7140124736477429949}
   m_Layer: 3
   m_Name: SettingsTextObject
   m_TagString: Untagged
@@ -137,7 +138,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8156053170909942236
+--- !u!114 &4668040574355941127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,9 +147,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 6370229227284722980}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af23c27abefb53a42a5fd006b71ea32f, type: 3}
+  m_Script: {fileID: 11500000, guid: 900ea7d5562e1d34ca5b86556464096c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _YPosition: -1
+  _YPosition: -2
   _Rig: {fileID: 1890616551428228467}
   _ResetRotationAngle: {x: 90, y: 180, z: 0}
+--- !u!114 &7140124736477429949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6370229227284722980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9bdb793c4cc7b4d87cf7f62aaaf67d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

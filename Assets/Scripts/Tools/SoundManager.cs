@@ -222,6 +222,44 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public AudioSource PlayLoopSFX(SoundCategory tCategory, string tSoundName)
+    {
+        if (_SoundCategoryDictionary.TryGetValue(tCategory, out var tCategoryDict))
+        {
+            if (tCategoryDict.TryGetValue(tSoundName, out var tSoundData))
+            {
+                AudioSource tSfxSource = GetAvailableSoundSource();
+                tSfxSource.clip = tSoundData._Clip;
+                tSfxSource.volume = tSoundData._Volume;
+                tSfxSource.loop = true;
+                tSfxSource.Play();
+                return tSfxSource; // 호출한 쪽에서 pitch 제어 가능
+            }
+            else
+            {
+                Debug.LogWarning($"SFX '{tSoundName}'를 찾을 수 없습니다. (Category: {tCategory})");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"'{tCategory}' 카테고리가 없습니다.");
+        }
+
+        return null;
+    }
+
+    public void StopLoopSFX(AudioSource tSource)
+    {
+        if (tSource != null)
+        {
+            tSource.Stop();
+            tSource.clip = null;
+            tSource.loop = false;
+            tSource.pitch = 1f;
+        }
+    }
+
+
     public void PlayRandomSFX(SoundCategory tCategory)
     {
         if (_SoundCategoryDictionary.TryGetValue(tCategory, out var tCategoryDict))

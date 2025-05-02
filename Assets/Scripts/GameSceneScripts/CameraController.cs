@@ -6,12 +6,13 @@ public class CameraController : MonoBehaviour
     [SerializeField] Transform _StartPoint;
     [SerializeField] Transform _EndPoint;
     [SerializeField] Transform _FollowTarget;
-    [SerializeField] float _MoveDuration = 2f;
 
     [Header("회전")]
     [SerializeField] JoystickController _Joystick;
     [SerializeField] float _RotationSpeed = 100f;
     [SerializeField] float _MinY = -60f, _MaxY = 60f;
+
+    GameSceneManager _GameSceneManager;
 
     float _Timer;
     bool _CanRotate;
@@ -19,6 +20,8 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
+        GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
+
         // 이동 초기화
         _FollowTarget.position = _StartPoint.position;
         _FollowTarget.rotation = _StartPoint.rotation;
@@ -30,7 +33,7 @@ public class CameraController : MonoBehaviour
         // 1) 시작→목표 이동
         if (!_CanRotate)
         {
-            float t = Mathf.Clamp01((_Timer += Time.deltaTime) / _MoveDuration);
+            float t = Mathf.Clamp01((_Timer += Time.deltaTime) / _GameSceneManager.GetOpeningDuration);
             _FollowTarget.position = Vector3.Lerp(_StartPoint.position, _EndPoint.position, t);
             _FollowTarget.rotation = Quaternion.Slerp(_StartPoint.rotation, _EndPoint.rotation, t);
             if (t >= 1f) _CanRotate = true;

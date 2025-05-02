@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 595459815227835134}
   - component: {fileID: -5266652736400514286}
   - component: {fileID: -3625531175392791260}
-  - component: {fileID: -5981047181981709392}
+  - component: {fileID: 1052054459027777795}
   - component: {fileID: 1264313663794580214}
   m_Layer: 3
   m_Name: StartTextObject
@@ -138,7 +138,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-5981047181981709392
+--- !u!114 &1052054459027777795
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,10 +147,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5505185108046196455}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af23c27abefb53a42a5fd006b71ea32f, type: 3}
+  m_Script: {fileID: 11500000, guid: 900ea7d5562e1d34ca5b86556464096c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _YPosition: 1
+  _YPosition: 0.5
   _Rig: {fileID: -3625531175392791260}
   _ResetRotationAngle: {x: 90, y: 180, z: 0}
 --- !u!114 &1264313663794580214

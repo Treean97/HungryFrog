@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MainSceneUIGameTitle : MainSceneUIBase
+public class MainSceneUIGameTitle : MainSceneUIObjectBase
 {
     MainSceneManager _MainSceneManager;
 

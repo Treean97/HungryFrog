@@ -4,7 +4,7 @@ using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainSceneUIBase : MonoBehaviour
+public class MainSceneUIObjectBase : MonoBehaviour
 {
     [SerializeField]
     float _YPosition;
@@ -15,6 +15,7 @@ public class MainSceneUIBase : MonoBehaviour
     [SerializeField]
     Vector3 _ResetRotationAngle;
 
+    bool _IsDrop = true;
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -56,6 +57,13 @@ public class MainSceneUIBase : MonoBehaviour
             transform.position = correctedPos;
 
             _Rig.constraints = RigidbodyConstraints.FreezeAll;
+
+            // »ç¿îµå
+            if(_IsDrop)
+            {
+                _IsDrop = false;
+                SoundManager._Inst.PlaySFX(SoundCategory.SFX, "MainSceneObjectDrop");
+            }
         }
     }
 

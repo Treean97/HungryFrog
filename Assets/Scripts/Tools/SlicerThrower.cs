@@ -11,7 +11,12 @@ public class SlicerThrower : MonoBehaviour
 
     Vector3 _ThrowVec;
     public float _ThrowSpeed;
-    float _ThrowAngleRange = 20f;
+
+    [SerializeField]
+    float _ClampRandomThrowAngleRange = 20f;
+
+    [SerializeField]
+    MainSceneUIManager _MainSceneUIManager;
 
     // Start is called before the first frame update
     void Start()
@@ -22,11 +27,22 @@ public class SlicerThrower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (IsInputPressed())
         {
+            if(_MainSceneUIManager.GetUIIsRunning)
+            {
+                return;
+            }
+
             SetTarget();
             ThrowSlicer();
         }
+    }
+
+    bool IsInputPressed()
+    {
+        return Input.GetMouseButtonDown(0) ||
+           (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
     }
 
     void SetTarget()
@@ -47,9 +63,9 @@ public class SlicerThrower : MonoBehaviour
         // 오브젝트 위치 설정
         tSlicer.transform.position = Camera.main.transform.position;
 
-        float random_x = Random.Range(-45, 45);
-        float random_y = Random.Range(-45, 45);
-        float random_z = Random.Range(-45, 45);
+        float random_x = Random.Range(-_ClampRandomThrowAngleRange, _ClampRandomThrowAngleRange);
+        float random_y = Random.Range(-_ClampRandomThrowAngleRange, _ClampRandomThrowAngleRange);
+        float random_z = Random.Range(-_ClampRandomThrowAngleRange, _ClampRandomThrowAngleRange);
         tSlicer.transform.rotation = Quaternion.Euler(new Vector3(random_x, random_y, random_z));
  
         // 던지기

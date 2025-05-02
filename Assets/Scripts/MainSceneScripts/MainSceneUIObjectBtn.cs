@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MainSceneUIBtnObject : MainSceneUIBase
+public class MainSceneUIObjectBtn : MainSceneUIObjectBase
 {    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()

@@ -103,6 +103,8 @@ public class ShootObjectBasement : MonoBehaviour
     // 오브젝트 데이터
     [SerializeField]
     ShootObject _ShootObjectData;
+
+    GameSceneManager _GameSceneManager;
     public ShootObject GetShootObjectData { get { return _ShootObjectData; } }
 
     bool _IsStable = false;
@@ -120,7 +122,7 @@ public class ShootObjectBasement : MonoBehaviour
 
     private void Start()
     {
-
+        _GameSceneManager = GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     // 풀에서 재생성 시 다시 IsStable = false;
@@ -178,7 +180,7 @@ public class ShootObjectBasement : MonoBehaviour
             if (this.gameObject.GetHashCode() < collision.gameObject.GetHashCode())
             {
                 // 충돌시 함수 수행
-                GameSceneManager._Inst.CollisionObject(this.gameObject, collision.gameObject);
+                _GameSceneManager.CollisionObject(this.gameObject, collision.gameObject);
 
                 // 점수 추가 (합체된 오브젝트의 ID로 점수 환산)
                 GameSceneScoreManager._Inst.AddScoreByCombine(GetShootObjectData.GetShootObjectID);

@@ -2,29 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSceneManager : MonoBehaviour
 {
-    // 싱글톤 인스턴스
-    public static GameSceneManager _Inst;
-
-
-    void Awake()
-    {
-        // 인스턴스가 이미 존재하는지 확인
-        if (_Inst == null)
-        {
-            _Inst = this; // 현재 인스턴스를 할당
-            DontDestroyOnLoad(gameObject); // 씬 전환 시 파괴되지 않도록 설정
-        }
-        else
-        {
-            Destroy(gameObject); // 이미 인스턴스가 있으면 새로운 객체는 삭제
-        }
-    }
-
     // Planet 오브젝트의 종류
     int _MaxID;
+
+    // 오프닝 시간
+    [SerializeField]
+    private int _OpeningDuration;
+    public int GetOpeningDuration => _OpeningDuration;
+
+    [SerializeField]
+    GameObject _TouchBlockUI;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +23,8 @@ public class GameSceneManager : MonoBehaviour
         _MaxID = ObjectPoolManager._Inst._Pools.Count - 1;
 
         SoundManager._Inst.PlayBGM("GameSceneBGM");
+
+        StartCoroutine(CantTouchDurationTimeCoroutine(GetOpeningDuration));
     }
 
     // Update is called once per frame
@@ -39,6 +32,26 @@ public class GameSceneManager : MonoBehaviour
     {
         
     }
+
+    void CanTouch()
+    {
+        _TouchBlockUI.SetActive(false);
+    }
+
+    void CantTouch()
+    {
+        _TouchBlockUI.SetActive(true);
+    }
+
+    IEnumerator CantTouchDurationTimeCoroutine(int tTime)
+    {
+        CantTouch();
+
+        yield return new WaitForSeconds(tTime);
+
+        CanTouch();
+    }
+
 
 
     // A, B의 충돌

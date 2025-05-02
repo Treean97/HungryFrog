@@ -15,6 +15,7 @@ public class ThrowObject : MonoBehaviour
 
     public float _RotateSpeed;
 
+
     // Start is called before the first frame update
     void Start()
     {
