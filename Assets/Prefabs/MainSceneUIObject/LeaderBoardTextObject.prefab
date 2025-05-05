@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 2541201339733468016}
   - component: {fileID: -5629862760154278150}
   - component: {fileID: 4020712113379364478}
-  - component: {fileID: 4381976556983596292}
-  m_Layer: 3
+  - component: {fileID: -3051265667671062364}
+  - component: {fileID: 8117412896889786581}
+  m_Layer: 0
   m_Name: LeaderBoardTextObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 1a50a9ace93fd614db63694d201e262b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -132,12 +133,12 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &4381976556983596292
+--- !u!114 &-3051265667671062364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,9 +147,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1804777254095317139}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 900ea7d5562e1d34ca5b86556464096c, type: 3}
+  m_Script: {fileID: 11500000, guid: d0ceedd9ee77500469491555ed08e9fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _YPosition: -0.75
-  _Rig: {fileID: 4020712113379364478}
+  _DissolveDuration: 2
+--- !u!114 &8117412896889786581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804777254095317139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 112a7a9a65a5def4e9bd6b0bf2084398, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ResetRotationAngle: {x: 90, y: 180, z: 0}
+  _RespawnDelay: 2

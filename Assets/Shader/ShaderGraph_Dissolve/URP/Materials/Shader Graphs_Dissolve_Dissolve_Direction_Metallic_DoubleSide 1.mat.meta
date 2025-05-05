@@ -11,6 +11,6 @@ AssetOrigin:
   productId: 191256
   packageName: URP Dissolve 2020
   packageVersion: 2020.3.0
-  assetPath: Assets/ShaderGraph_Dissolve/URP/Materials/Shader Graphs_Dissolve_Dissolve_Direction_Metallic_DoubleSide
+  assetPath: Assets/Shader/ShaderGraph_Dissolve/URP/Materials/Shader Graphs_Dissolve_Dissolve_Direction_Metallic_DoubleSide
     1.mat
   uploadId: 533539

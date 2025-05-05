@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4100533806125561459}
   - component: {fileID: 4966839463235714333}
   - component: {fileID: 6787085325936958527}
-  - component: {fileID: 2991283506168045386}
+  - component: {fileID: 1825807216087074350}
   m_Layer: 3
   m_Name: SettingsTextObject
   m_TagString: Untagged
@@ -137,7 +137,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2991283506168045386
+--- !u!114 &1825807216087074350
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,9 +146,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6782558684594242166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 900ea7d5562e1d34ca5b86556464096c, type: 3}
+  m_Script: {fileID: 11500000, guid: bb9bdb793c4cc7b4d87cf7f62aaaf67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _YPosition: -1
-  _Rig: {fileID: 6787085325936958527}
   _ResetRotationAngle: {x: 90, y: 180, z: 0}

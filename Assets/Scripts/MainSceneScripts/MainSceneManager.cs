@@ -17,25 +17,28 @@ public class MainSceneManager : MonoBehaviour
     GameObject[] _MainSceneUIPF;
 
     [SerializeField]
+    GameObject[] _MainSceneUIGO;
+
+    [SerializeField]
     Transform[] _MainSceneUITF;
 
-    bool _IsRespawning = false;
 
     [SerializeField]
     float WaitForLoadScene = 2f;
 
-    bool _SceneChanging = false;
+    bool _IsSceneChanging = false;
+    public bool GetIsSceneChanging => _IsSceneChanging;
 
 
     private void Start()
     {
-        StartRespawnGameTitle();
+        RespawnGameTitle();
         ResetAllUI();
 
 
-        _SceneChanging = false;
+        _IsSceneChanging = false;
 
-        // Sound
+        // 사운드
         SoundManager._Inst.PlayBGM("MainSceneBGM");
     }
 
@@ -55,7 +58,7 @@ public class MainSceneManager : MonoBehaviour
 
     IEnumerator LoadLoadingSceneCo()
     {
-        _SceneChanging = true;
+        _IsSceneChanging = true;
 
         yield return new WaitForSeconds(WaitForLoadScene);
 
@@ -64,27 +67,36 @@ public class MainSceneManager : MonoBehaviour
 
     }
 
-    public void StartRespawnGameTitle()
+    public void RespawnGameTitle()
     {
-        if(!_SceneChanging)
+        if(!_IsSceneChanging)
         {
-            StartCoroutine(RespawnGameTitle());
+            // 오브젝트 생성
+            _GameTitleGO = Instantiate(_GameTitlePF, _GameTitleSpawnTF.position, _GameTitlePF.transform.rotation);
         }
         
     }
 
-    private IEnumerator RespawnGameTitle()
-    {
-        _IsRespawning = true; // 재생성 시작
 
-        // 프레임을 기다려 현재 생성 중인 오브젝트가 할당될 시간을 확보
-        yield return null;
+
+    public void RespawnUIObject(int tObjectIndex, float tDelay)
+    {
+        if (!_IsSceneChanging)
+        {
+            StartCoroutine(RespawnUIObjectCo(tObjectIndex, tDelay));
+
+        }
+
+    }
+
+    IEnumerator RespawnUIObjectCo(int tObjectIndex, float tDelay)
+    {
+        yield return new WaitForSeconds(tDelay);
 
         // 오브젝트 생성
-        _GameTitleGO = Instantiate(_GameTitlePF, _GameTitleSpawnTF.position, _GameTitlePF.transform.rotation);
-
-        _IsRespawning = false; // 재생성 완료
+        Instantiate(_MainSceneUIPF[tObjectIndex], _MainSceneUITF[tObjectIndex]);
     }
+
 
     private void ResetAllUI()
     {

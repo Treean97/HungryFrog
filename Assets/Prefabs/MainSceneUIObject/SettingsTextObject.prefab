@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 8702653013858925536}
   - component: {fileID: 4111361463260215875}
   - component: {fileID: 1890616551428228467}
-  - component: {fileID: 4668040574355941127}
+  - component: {fileID: -5247165004736485163}
   - component: {fileID: 7140124736477429949}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: SettingsTextObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 1a50a9ace93fd614db63694d201e262b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -133,12 +133,12 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &4668040574355941127
+--- !u!114 &-5247165004736485163
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,12 +147,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6370229227284722980}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 900ea7d5562e1d34ca5b86556464096c, type: 3}
+  m_Script: {fileID: 11500000, guid: d0ceedd9ee77500469491555ed08e9fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _YPosition: -2
-  _Rig: {fileID: 1890616551428228467}
-  _ResetRotationAngle: {x: 90, y: 180, z: 0}
+  _DissolveDuration: 2
 --- !u!114 &7140124736477429949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,3 +163,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb9bdb793c4cc7b4d87cf7f62aaaf67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ResetRotationAngle: {x: 90, y: 180, z: 0}
+  _RespawnDelay: 2

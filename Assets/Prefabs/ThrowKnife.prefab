@@ -122,7 +122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0caa798783fdfd54c88aa5777aa25f13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _SlicedMaterial: {fileID: 2100000, guid: 06df834538816cf4fa6d92a7f97b9e8e, type: 2}
+  _SlicedObjectMaterial: {fileID: 2100000, guid: 1a50a9ace93fd614db63694d201e262b,
+    type: 2}
+  _SlicedMaterial: {fileID: 2100000, guid: 8cdf3be8b3a9fad45aeb2f8b6ea977c7, type: 2}
   _SliceMask:
     serializedVersion: 2
     m_Bits: 8

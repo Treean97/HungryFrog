@@ -13,5 +13,6 @@ AssetOrigin:
   productId: 191256
   packageName: URP Dissolve 2020
   packageVersion: 2020.3.0
-  assetPath: Assets/ShaderGraph_Dissolve/Utility/SubGraph/PBR_Metallic Sub Graph.shadersubgraph
+  assetPath: Assets/Shader/ShaderGraph_Dissolve/Utility/SubGraph/PBR_Metallic Sub
+    Graph.shadersubgraph
   uploadId: 533539

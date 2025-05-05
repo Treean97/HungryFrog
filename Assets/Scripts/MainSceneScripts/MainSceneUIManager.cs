@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -27,6 +28,12 @@ public class MainSceneUIManager : MonoBehaviour
     GameObject[] _SettingUIPanels;
 
 
+    [Header("UI Panel Info UI Set")]
+    [SerializeField]
+    TMP_Text _VersionText;
+    
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -35,6 +42,9 @@ public class MainSceneUIManager : MonoBehaviour
 
         // Setting UI 초기화 
         SettingUIPanelSound();
+
+        // InfoUI 초기화
+        SetInfoUI();
     }
 
     // Update is called once per frame
@@ -128,4 +138,9 @@ public class MainSceneUIManager : MonoBehaviour
         _SettingUIPanels[2].SetActive(true);
     }
 
+
+    void SetInfoUI()
+    {
+        _VersionText.text = $"Version : {Application.version}";
+    }
 }
