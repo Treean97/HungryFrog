@@ -10,7 +10,6 @@ public class ShootPowerSlider : MonoBehaviour
 
     [Header("Charging Sound Settings")]
     [SerializeField] private string _ChargingSoundName = "SliderCharging";
-    [SerializeField] private SoundCategory _SoundCategory = SoundCategory.Charging;
     [SerializeField] private float _MinPitch = 1f;
     [SerializeField] private float _MaxPitch = 2f;
 
@@ -40,7 +39,7 @@ public class ShootPowerSlider : MonoBehaviour
         if (tIsCharging && !_WasCharging)
         {
             // 충전 시작
-            _ChargingSource = SoundManager._Inst.PlayLoopSFX(_SoundCategory, _ChargingSoundName);
+            _ChargingSource = SoundManager._Inst.PlayLoopSFX(SoundCategory.Charging, _ChargingSoundName);
             if (_ChargingSource != null)
                 _ChargingSource.pitch = _MinPitch;
         }

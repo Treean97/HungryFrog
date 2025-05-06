@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class MainSceneUIManager : MonoBehaviour
 {
-    [SerializeField]
-    SoundManager _SoundManager;
-
     [Header("Setting UI")]
     [SerializeField]
     GameObject _SettingUI;

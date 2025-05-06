@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
+        _GameSceneManager = GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
 
         // 이동 초기화
         _FollowTarget.position = _StartPoint.position;

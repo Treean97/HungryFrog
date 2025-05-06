@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _SoundName: MainSceneBGM
   _Clip: {fileID: 8300000, guid: 22d798f954091a249ba1d6bf0e25c8ad, type: 3}
-  _Volume: 1
+  _Volume: 0.7
+  _Category: 0

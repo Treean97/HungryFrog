@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObjectShooter : MonoBehaviour
@@ -29,7 +31,15 @@ public class ObjectShooter : MonoBehaviour
 
     private int _ShootTouchID = -1; // 발사용 터치 ID
 
-    private void Start()
+
+    [SerializeField]
+    GameSceneManager _GameSceneManager;
+    [SerializeField]
+    GameSceneUIManager _GameSceneUIManager;
+
+
+
+private void Start()
     {
         _ShootForce = 0;
         _AdditionalForceManager.SetAdditionalForce();
@@ -41,10 +51,19 @@ public class ObjectShooter : MonoBehaviour
         }
 
         _NextObjectsUI.UpdateQueueDisplay(_NextObjects);
+
+        
     }
 
     private void Update()
     {
+        if(!CheckIsCanShoot())
+        {
+            return;
+        }
+
+
+
         if (_CurShootDelay < _MaxShootDelay)
         {
             _CurShootDelay += Time.deltaTime;
@@ -67,6 +86,30 @@ public class ObjectShooter : MonoBehaviour
             ShootObject();
             _AdditionalForceManager.SetAdditionalForce();
         }
+    }
+
+    // 발사 불가능 조건
+    bool CheckIsCanShoot()
+    {
+        // 게임 시작 후 일정 시간동안 발사 막기
+        if (_GameSceneManager.GetIsOpening)
+        {
+            return false;
+        }
+
+        // 버튼 터치 시 발사 막기
+        if (UIBtnBase._IsBlocking)
+        {
+            return false;
+        }
+
+        // UI 팝업 시 발사 막기
+        if (_GameSceneUIManager.GetUIIsRunning)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private bool IsTouchPressed()
@@ -108,6 +151,7 @@ public class ObjectShooter : MonoBehaviour
 
         return false;
     }
+
 
     private void SettingShootPower()
     {

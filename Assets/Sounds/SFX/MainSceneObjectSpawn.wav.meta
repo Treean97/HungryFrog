@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: 7f4aa26d5b55226409cda231ffaf869b
-timeCreated: 1570802997
-licenseType: Store
+guid: 24eaeae153b524bb6a55fdcc7ee3c735
 AudioImporter:
+  externalObjects: {}
   serializedVersion: 6
   defaultSettings:
     loadType: 0
@@ -23,8 +22,9 @@ AudioImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 155776
-  packageName: Free Sound Effects Pack
-  packageVersion: 1.0
-  assetPath: Assets/Free Pack/Magic Spell_Short Reverse_1.wav
-  uploadId: 333958
+  productId: 183649
+  packageName: Shapeforms Audio Free Sound Effects
+  packageVersion: 1.1
+  assetPath: Assets/Shapeforms Audio Free Sound Effects/Arcane Activations Preview/AUDIO/Arcane
+    Beacon.wav
+  uploadId: 426875

@@ -14,8 +14,9 @@ public class GameSceneManager : MonoBehaviour
     private int _OpeningDuration;
     public int GetOpeningDuration => _OpeningDuration;
 
-    [SerializeField]
-    GameObject _TouchBlockUI;
+    private bool _IsOpening = true;
+    public bool GetIsOpening => _IsOpening;
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +25,8 @@ public class GameSceneManager : MonoBehaviour
 
         SoundManager._Inst.PlayBGM("GameSceneBGM");
 
-        StartCoroutine(CantTouchDurationTimeCoroutine(GetOpeningDuration));
+
+        StartCoroutine(BlockShootOnOpening());
     }
 
     // Update is called once per frame
@@ -33,25 +35,13 @@ public class GameSceneManager : MonoBehaviour
         
     }
 
-    void CanTouch()
+    // 오프닝 동안 발사 방지
+    IEnumerator BlockShootOnOpening()
     {
-        _TouchBlockUI.SetActive(false);
+        yield return new WaitForSeconds(_OpeningDuration);
+
+        _IsOpening = false;
     }
-
-    void CantTouch()
-    {
-        _TouchBlockUI.SetActive(true);
-    }
-
-    IEnumerator CantTouchDurationTimeCoroutine(int tTime)
-    {
-        CantTouch();
-
-        yield return new WaitForSeconds(tTime);
-
-        CanTouch();
-    }
-
 
 
     // A, B의 충돌

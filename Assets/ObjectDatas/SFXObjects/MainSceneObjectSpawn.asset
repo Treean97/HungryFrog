@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MainSceneObjectSpawn
   m_EditorClassIdentifier: 
   _SoundName: MainSceneObjectSpawn
-  _Clip: {fileID: 8300000, guid: 7f4aa26d5b55226409cda231ffaf869b, type: 3}
+  _Clip: {fileID: 8300000, guid: 24eaeae153b524bb6a55fdcc7ee3c735, type: 3}
   _Volume: 0.5
   _Category: 1
