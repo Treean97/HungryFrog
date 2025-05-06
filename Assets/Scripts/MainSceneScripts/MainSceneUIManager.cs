@@ -82,6 +82,9 @@ public class MainSceneUIManager : MonoBehaviour
     {
         if (_CurrentCoroutine != null) StopCoroutine(_CurrentCoroutine);
         {
+            // 데이터 저장
+            GameManager._Inst._DataSaveLoad.SaveData();
+
             _UIIsRunning = false;
             _CurrentCoroutine = StartCoroutine(MoveSettingUI(_SettingUIWaitingPosition));
 
@@ -134,7 +137,6 @@ public class MainSceneUIManager : MonoBehaviour
         SettingUIPanelOff();
         _SettingUIPanels[2].SetActive(true);
     }
-
 
     void SetInfoUI()
     {
