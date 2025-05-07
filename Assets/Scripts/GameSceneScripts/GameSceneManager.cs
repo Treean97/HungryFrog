@@ -47,6 +47,9 @@ public class GameSceneManager : MonoBehaviour
     // A, B의 충돌
     public void CollisionObject(GameObject tObject_A, GameObject tObject_B)
     {
+        // 사운드
+        SoundManager._Inst.PlaySFX(SoundCategory.SFX, "CombineSound");
+
         // Object_A나 B의 ID
         int tObjectID = tObject_A.gameObject.GetComponent<ShootObjectBasement>().GetShootObjectData.GetShootObjectID;
 
@@ -54,7 +57,7 @@ public class GameSceneManager : MonoBehaviour
         if (tObjectID >= _MaxID)
         {
             return;
-        }
+        }        
 
         // 오브젝트 리턴
         ReturnObject(tObject_A, tObject_B);

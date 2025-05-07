@@ -11,7 +11,7 @@ public class GameSceneUIManager : MonoBehaviour
     GameObject _SettingUI;
 
     [SerializeField]
-    Vector3 _SettingUIWaitingPosition;
+    Vector3 _UIWaitingPosition;
 
     [SerializeField]
     float _MoveDuration;
@@ -30,11 +30,17 @@ public class GameSceneUIManager : MonoBehaviour
     [SerializeField]
     TMP_Text _VersionText;
 
+
+    [Header("Ending UI")]
+    [SerializeField]
+    GameObject _EndingUI;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // 위치 초기화
-        _SettingUI.transform.localPosition = _SettingUIWaitingPosition;
+        _SettingUI.transform.localPosition = _UIWaitingPosition;
+        _EndingUI.transform.localPosition = _UIWaitingPosition;
 
         // Setting UI 초기화 
         SettingUIPanelSound();
@@ -53,6 +59,11 @@ public class GameSceneUIManager : MonoBehaviour
             {
                 SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UITouch");
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Ending();
         }
     }
 
@@ -86,7 +97,7 @@ public class GameSceneUIManager : MonoBehaviour
         if (_CurrentCoroutine != null)
             StopCoroutine(_CurrentCoroutine);
 
-        _CurrentCoroutine = StartCoroutine(MoveSettingUICo(_SettingUIWaitingPosition, false)); // false: 닫기
+        _CurrentCoroutine = StartCoroutine(MoveSettingUICo(_UIWaitingPosition, false)); // false: 닫기
 
         SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UIPop");
     }
@@ -112,7 +123,6 @@ public class GameSceneUIManager : MonoBehaviour
 
         _UIIsRunning = tIsOpening;
     }
-
 
 
     void SettingUIPanelOff()
@@ -146,4 +156,40 @@ public class GameSceneUIManager : MonoBehaviour
     {
         _VersionText.text = $"Version : {Application.version}";
     }
+
+    public void Ending()
+    {
+        EndingUIPanelOn();
+    }
+
+
+    void EndingUIPanelOn()
+    {        
+        _CurrentCoroutine = StartCoroutine(MoveEndingUICo(_UIWaitingPosition, true)); // true : 열기
+
+        SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UIPop");
+    }
+
+    // UI 이동 코루틴
+    IEnumerator MoveEndingUICo(Vector3 tTargetPos, bool tIsOpening)
+    {
+        Vector3 tStartPos = _EndingUI.transform.localPosition;
+        float tElapsed = 0f;
+
+        while (tElapsed < _MoveDuration)
+        {
+            tElapsed += Time.deltaTime;
+            float tLerpT = Mathf.Clamp01(tElapsed / _MoveDuration);
+
+            _EndingUI.transform.localPosition = Vector3.Lerp(tStartPos, tTargetPos, tLerpT);
+            yield return null;
+        }
+
+        _EndingUI.transform.localPosition = tTargetPos;
+
+        _CurrentCoroutine = null;
+
+        _UIIsRunning = tIsOpening;
+    }
+
 }
