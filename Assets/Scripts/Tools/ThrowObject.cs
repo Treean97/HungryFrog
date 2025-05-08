@@ -1,36 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-
 
 public class ThrowObject : MonoBehaviour
 {
-    public float _ThrowForce = 10f; // 던질 힘
-    public float _Gravity = -10f; // 중력 값
-
-    Vector3 _ThrowVector; // 던질 방향
-    Vector3 _Velocity; // 현재 속도
-
+    public float _ThrowForce = 10f;
     public float _RotateSpeed;
 
+    private Vector3 _ThrowVector;
+    private Vector3 _Velocity;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Coroutine _ReturnCoroutine;
 
-    // Update is called once per frame
     void Update()
     {
-        // 회전
         RotateAroundLocalX();
-
-        // 이동
-        Throw();
-        ApplyGravity();
+        MoveStraight();
     }
 
     void RotateAroundLocalX()
@@ -42,20 +26,22 @@ public class ThrowObject : MonoBehaviour
     public void SetThrowVector(Vector3 tVector)
     {
         _ThrowVector = tVector;
-    }
-
-    public void Throw()
-    {
-        // 속도 설정
         _Velocity = _ThrowVector * _ThrowForce;
+
+        if (_ReturnCoroutine != null)
+            StopCoroutine(_ReturnCoroutine);
+
+        _ReturnCoroutine = StartCoroutine(ReturnToPoolAfterSeconds(5f));
     }
 
-    private void ApplyGravity()
+    private void MoveStraight()
     {
-        // 중력 적용
-        _Velocity.y += _Gravity * Time.deltaTime; // 중력 효과 추가
-        transform.position += _Velocity * Time.deltaTime; // 위치 업데이트
+        transform.position += _Velocity * Time.deltaTime;
     }
 
+    private IEnumerator ReturnToPoolAfterSeconds(float tDelay)
+    {
+        yield return new WaitForSeconds(tDelay);
+        ObjectPoolManager._Inst.ReturnObject(gameObject);
+    }
 }
-

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameSceneUIManager : MonoBehaviour
 {
@@ -35,12 +37,16 @@ public class GameSceneUIManager : MonoBehaviour
     [SerializeField]
     GameObject _EndingUI;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // 위치 초기화
         _SettingUI.transform.localPosition = _UIWaitingPosition;
         _EndingUI.transform.localPosition = _UIWaitingPosition;
+
+        // bool 초기화
+        _UIIsRunning = false;
 
         // Setting UI 초기화 
         SettingUIPanelSound();
@@ -165,7 +171,8 @@ public class GameSceneUIManager : MonoBehaviour
 
     void EndingUIPanelOn()
     {        
-        _CurrentCoroutine = StartCoroutine(MoveEndingUICo(_UIWaitingPosition, true)); // true : 열기
+        _CurrentCoroutine = StartCoroutine(MoveEndingUICo(Vector3.zero, true)); // true : 열기
+
 
         SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UIPop");
     }
@@ -190,6 +197,17 @@ public class GameSceneUIManager : MonoBehaviour
         _CurrentCoroutine = null;
 
         _UIIsRunning = tIsOpening;
+    }
+
+    public void ReplayBtn()
+    {
+        // 로딩 씬 후 게임 씬 전환
+        SceneManager.LoadScene("LoadingScene");
+    }
+
+    public void QuitBtn()
+    {
+        SceneManager.LoadScene("MainScene");
     }
 
 }

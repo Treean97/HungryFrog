@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ShootObjectID: 4
   _ShootObjectName: Donut
-  _ShootObjectSpriteOnUI: {fileID: 0}
+  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: 681b7061b3b890a499dde37a6ec92949,
+    type: 3}

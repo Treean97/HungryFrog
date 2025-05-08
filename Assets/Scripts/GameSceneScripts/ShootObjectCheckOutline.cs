@@ -12,21 +12,10 @@ public class ShootObjectCheckOutline : MonoBehaviour
     float _OutlineRadius;
     float _ObjectRadius;
 
+    GameSceneManager _GameSceneManager;
+
     void Start()
     {
-        /* 테스트 코드
-         * 
-         * 
-        _OutlineShpere = GameObject.FindGameObjectWithTag("OutlineSphere");
-        _ShootObjectBasement = GetComponent<ShootObjectBasement>();
-
-        // 외부라인의 반지름 계산
-        _OutlineRadius = _OutlineShpere.transform.localScale.x * 0.5f;
-
-        // 오브젝트의 반지름 계산 (콜라이더 기준)
-        SphereCollider tSphereCollider = GetComponent<SphereCollider>();
-        _ObjectRadius = tSphereCollider.radius * transform.localScale.x;
-        */
         _ZeroPointSphere = GameObject.FindGameObjectWithTag("ZeroPointSphere");
         _OutlineShpere = GameObject.FindGameObjectWithTag("OutlineSphere");
         _ShootObjectBasement = GetComponent<ShootObjectBasement>();
@@ -38,6 +27,7 @@ public class ShootObjectCheckOutline : MonoBehaviour
         MeshCollider tMeshCollider = GetComponent<MeshCollider>();
         _ObjectRadius = tMeshCollider.bounds.extents.magnitude;
 
+        _GameSceneManager = GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     private void Update()
@@ -48,9 +38,8 @@ public class ShootObjectCheckOutline : MonoBehaviour
         if (Vector2.Distance(this.transform.position, _ZeroPointSphere.transform.position) - _ObjectRadius > _OutlineRadius
             && _ShootObjectBasement.GetIsStable == true)
         {
-            Debug.Log("오브젝트가 원을 벗어났습니다! 게임 종료!");
-            Debug.Log(this.gameObject);
-            Time.timeScale = 0f;
+            Debug.Log("End");
+            _GameSceneManager.Ending();
         }
     }
 }

@@ -3,17 +3,17 @@ using UnityEngine.UI;
 
 public class VolumeController : MonoBehaviour
 {
-    [Header("슬라이더")]
+    [Header("Slider")]
     [SerializeField] private Slider _MasterSlider;
     [SerializeField] private Slider _BGMSlider;
     [SerializeField] private Slider _SFXSlider;
 
-    [Header("뮤트 버튼")]
+    [Header("Mute Button")]
     [SerializeField] private Button _MasterMuteButton;
     [SerializeField] private Button _BGMMuteButton;
     [SerializeField] private Button _SFXMuteButton;
 
-    [Header("공용 스프라이트")]
+    [Header("Mute Sprite")]
     [SerializeField] private Sprite _MuteSprite;
     [SerializeField] private Sprite _UnmuteSprite;
 
@@ -51,6 +51,7 @@ public class VolumeController : MonoBehaviour
             return;
 
         SoundManager._Inst.SetMasterVolume(tValue);
+        GameManager._Inst._DataSaveLoad._Data.MasterValue = tValue; // 추가
         UpdateButtonIcon(_MasterMuteButton, false);
     }
 
@@ -60,6 +61,7 @@ public class VolumeController : MonoBehaviour
             return;
 
         SoundManager._Inst.SetBGMVolume(tValue);
+        GameManager._Inst._DataSaveLoad._Data.BGMValue = tValue; // 추가
         UpdateButtonIcon(_BGMMuteButton, false);
     }
 
@@ -69,6 +71,7 @@ public class VolumeController : MonoBehaviour
             return;
 
         SoundManager._Inst.SetSFXVolume(tValue);
+        GameManager._Inst._DataSaveLoad._Data.SFXValue = tValue; // 추가
         UpdateButtonIcon(_SFXMuteButton, false);
     }
 

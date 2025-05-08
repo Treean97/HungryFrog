@@ -187,9 +187,7 @@ private void Start()
 
         tRig.AddTorque(tRandomTorque, ForceMode.Impulse);
 
-        GameSceneScoreManager._Inst.AddScoreByShoot(
-            tShootObjectGO.GetComponent<ShootObjectBasement>().GetShootObjectData.GetShootObjectID
-        );
+        GameSceneScoreManager._Inst.AddScoreByShoot(tShootObjectGO.GetComponent<ShootObjectBasement>().GetShootObjectData.GetShootObjectID);
 
         _NextObjects.Enqueue(GetRandomObjectInfo());
         _NextObjectsUI.UpdateQueueDisplay(_NextObjects);

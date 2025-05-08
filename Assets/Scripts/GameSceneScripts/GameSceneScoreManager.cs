@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -21,20 +22,22 @@ public class GameSceneScoreManager : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    GameSceneScoreUI _GameSceneScoreUI;
+    private int _Score;
+    public int GetScore => _Score;
 
     [SerializeField]
     int _ShootScoreMultiple;
 
     [SerializeField]
     int _CombineScoreMultiple;
-   
+
+    [SerializeField]
+    TMP_Text[] _GameSceneScoreTextUI;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        _Score = 0;
     }
 
     // Update is called once per frame
@@ -46,13 +49,25 @@ public class GameSceneScoreManager : MonoBehaviour
     public void AddScoreByShoot(int tObjectID)
     {
         // 0번도 있으니 +1
-        _GameSceneScoreUI.AddScore((tObjectID + 1) * _ShootScoreMultiple);
+        _Score += (tObjectID + 1) * _ShootScoreMultiple;
+
+        UpdateScoreUI();
     }
 
     public void AddScoreByCombine(int tObjectID)
     {
         // 0번도 있으니 +1
-        _GameSceneScoreUI.AddScore((tObjectID + 1) * _CombineScoreMultiple);
-        
+        _Score += (tObjectID + 1) * _CombineScoreMultiple;
+
+        UpdateScoreUI();
     }
+
+    public void UpdateScoreUI()
+    {
+        foreach (var item in _GameSceneScoreTextUI)
+        {
+            item.text = _Score.ToString();
+        }
+    }
+
 }

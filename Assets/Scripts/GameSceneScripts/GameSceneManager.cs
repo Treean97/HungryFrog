@@ -17,6 +17,10 @@ public class GameSceneManager : MonoBehaviour
     private bool _IsOpening = true;
     public bool GetIsOpening => _IsOpening;
 
+    [SerializeField]
+    GameSceneUIManager _GameSceneUIManager;
+
+    bool IsEnd = false;
 
     // Start is called before the first frame update
     void Start()
@@ -90,4 +94,16 @@ public class GameSceneManager : MonoBehaviour
         GameObject tGO = ObjectPoolManager._Inst.GetObject(tName);
         tGO.transform.position = tSpawnPos;
     }
+
+    public void Ending()
+    {
+        if(!IsEnd)
+        {
+            IsEnd = true;
+
+            _GameSceneUIManager.Ending();
+        }
+        
+    }
+
 }

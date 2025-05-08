@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ShootObjectID: 7
   _ShootObjectName: Watermelon
-  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: 8807686e370ff594aac6bf6795e87132,
+  _ShootObjectSpriteOnUI: {fileID: 21300000, guid: 1956bea89131ecc47be3a1a56dc3a484,
     type: 3}
