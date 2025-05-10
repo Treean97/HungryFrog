@@ -21,6 +21,7 @@ public class JoystickController : MonoBehaviour, IDragHandler, IPointerDownHandl
     public void OnDrag(PointerEventData e)
     {
         Vector2 tDelta = (Vector2)e.position - (Vector2)_BackGround.position;
+
         _InputDirection = tDelta.normalized;
         float tDist = Mathf.Clamp(tDelta.magnitude, 0, _BackGround.sizeDelta.x / 2f);
         _Handle.anchoredPosition = _InputDirection * tDist;

@@ -102,6 +102,13 @@ public class GameSceneManager : MonoBehaviour
             IsEnd = true;
 
             _GameSceneUIManager.Ending();
+
+            // 발사 오브젝트 정지
+            GameObject[] tShootObject = GameObject.FindGameObjectsWithTag("ShootObject");
+            foreach(var item in tShootObject)
+            {
+                item.GetComponent<ShootObjectBasement>().PauseObject();
+            }
         }
         
     }

@@ -11,6 +11,7 @@ TagManager:
   - OutlineSphere
   - MainSceneBtnManager
   - MainSceneUIManager
+  - ShootObject
   layers:
   - Default
   - TransparentFX

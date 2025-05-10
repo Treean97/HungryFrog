@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: -7414883876625094290}
   m_Layer: 0
   m_Name: BananaObject
-  m_TagString: Untagged
+  m_TagString: ShootObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

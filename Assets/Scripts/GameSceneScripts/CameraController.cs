@@ -42,7 +42,7 @@ public class CameraController : MonoBehaviour
 
         // 2) 매 프레임 JoystickController.InputDirection 읽어서 회전
         Vector2 tDir = _Joystick._InputDirection;
-        float tDeltaYaw = tDir.x * _RotationSpeed * Time.deltaTime;
+        float tDeltaYaw = -tDir.x * _RotationSpeed * Time.deltaTime;
         _CurrentYaw = Mathf.Clamp(_CurrentYaw + tDeltaYaw, _MinY, _MaxY);
 
         var e = _FollowTarget.eulerAngles;

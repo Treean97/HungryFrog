@@ -188,4 +188,12 @@ public class ShootObjectBasement : MonoBehaviour
             }
         }
     }
+
+    public void PauseObject()
+    {
+        Rigidbody tRig = gameObject.GetComponent<Rigidbody>();
+
+        tRig.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
+        tRig.freezeRotation = true;
+    }
 }
