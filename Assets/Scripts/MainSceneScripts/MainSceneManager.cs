@@ -17,9 +17,6 @@ public class MainSceneManager : MonoBehaviour
     GameObject[] _MainSceneUIPF;
 
     [SerializeField]
-    GameObject[] _MainSceneUIGO;
-
-    [SerializeField]
     Transform[] _MainSceneUITF;
 
 

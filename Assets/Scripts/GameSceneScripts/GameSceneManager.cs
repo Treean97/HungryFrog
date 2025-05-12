@@ -97,7 +97,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void Ending()
     {
-        if(!IsEnd)
+        if (!IsEnd)
         {
             IsEnd = true;
 
@@ -105,10 +105,24 @@ public class GameSceneManager : MonoBehaviour
 
             // 발사 오브젝트 정지
             GameObject[] tShootObject = GameObject.FindGameObjectsWithTag("ShootObject");
-            foreach(var item in tShootObject)
+            foreach (var item in tShootObject)
             {
                 item.GetComponent<ShootObjectBasement>().PauseObject();
             }
+
+            // 데이터 Playfab 저장
+            PlayFabLeaderboardManager._Inst.SaveScore(GameSceneScoreManager._Inst.GetScore,
+            onSuccess: () =>
+            {
+                Debug.Log("PlayFab에 최종 점수 업로드 성공!");
+                // 예: 여기서 리더보드 씬으로 전환하거나 완료 팝업 띄우기
+            },
+            onError: (errMsg) =>
+            {
+                Debug.LogError("PlayFab 점수 업로드 실패: " + errMsg);
+                // 예: 오류 UI 표시
+            }
+            );
         }
         
     }
