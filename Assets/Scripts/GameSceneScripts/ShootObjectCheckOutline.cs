@@ -38,7 +38,6 @@ public class ShootObjectCheckOutline : MonoBehaviour
         if (Vector2.Distance(this.transform.position, _ZeroPointSphere.transform.position) - _ObjectRadius > _OutlineRadius
             && _ShootObjectBasement.GetIsStable == true)
         {
-            Debug.Log("End");
             _GameSceneManager.Ending();
         }
     }

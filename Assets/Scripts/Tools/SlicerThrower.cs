@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 public class SlicerThrower : MonoBehaviour
@@ -42,9 +43,33 @@ public class SlicerThrower : MonoBehaviour
     // 터치 및 클릭 감지
     bool IsInputPressed()
     {
-        return Input.GetMouseButtonDown(0) ||
-           (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
+        // 모바일 터치
+        if (Input.touchCount > 0)
+        {
+            Touch tTouch = Input.GetTouch(0);
+
+            if (tTouch.phase == TouchPhase.Began)
+            {
+                // UI 위 터치면 무시
+                if (EventSystem.current.IsPointerOverGameObject(tTouch.fingerId))
+                    return false;
+
+                return true;
+            }
+        }
+        // PC 마우스 클릭
+        else if (Input.GetMouseButtonDown(0))
+        {
+            // UI 위 클릭이면 무시
+            if (EventSystem.current.IsPointerOverGameObject())
+                return false;
+
+            return true;
+        }
+
+        return false;
     }
+
 
     void SetTarget()
     {

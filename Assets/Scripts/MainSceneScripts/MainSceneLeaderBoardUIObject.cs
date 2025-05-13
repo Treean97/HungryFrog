@@ -4,6 +4,7 @@ using UnityEngine;
 public class MainSceneLeaderBoardUIObject : MainSceneUIObjectBase
 {
     MainSceneManager _MainSceneManager;
+    MainSceneUIManager _MainSceneUIManager;
     DissolveEffect _DissolveEffect;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -11,8 +12,8 @@ public class MainSceneLeaderBoardUIObject : MainSceneUIObjectBase
     {
         base.Start();
         _MainSceneManager = GameObject.FindGameObjectWithTag("MainSceneManager").GetComponent<MainSceneManager>();
+        _MainSceneUIManager = GameObject.FindGameObjectWithTag("MainSceneUIManager").GetComponent<MainSceneUIManager>();
         _DissolveEffect = GetComponent<DissolveEffect>();
-
 
         StartCoroutine(RespwanCo());
     }
@@ -35,15 +36,23 @@ public class MainSceneLeaderBoardUIObject : MainSceneUIObjectBase
 
     private void OnDestroy()
     {
-        if(_MainSceneManager == null)
+        if (_MainSceneManager == null)
         {
             return;
         }
 
         if (!_MainSceneManager.GetIsSceneChanging)
         {
+            _MainSceneUIManager.LeaderBoardUIOn();
             _MainSceneManager.RespawnUIObject(1, _RespawnDelay);
+
+            // 리더보드 UI 갱신
+            MainSceneLeaderBoardUIManager tLeaderBoardUIManager = _MainSceneUIManager.GetComponent<MainSceneLeaderBoardUIManager>();
+            if (tLeaderBoardUIManager != null)
+            {
+                tLeaderBoardUIManager.ShowLeaderboard(); 
+            }
         }
-            
+
     }
 }

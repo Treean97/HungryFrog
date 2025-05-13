@@ -193,7 +193,7 @@ public class ShootObjectBasement : MonoBehaviour
     {
         Rigidbody tRig = gameObject.GetComponent<Rigidbody>();
 
-        tRig.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
+        tRig.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
         tRig.freezeRotation = true;
     }
 }

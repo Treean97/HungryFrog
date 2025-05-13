@@ -53,18 +53,21 @@ public class PlayFabLeaderboardManager : MonoBehaviour
             ? tDataLoader._Data.DisplayId
             : SystemInfo.deviceUniqueIdentifier;
 
-        // 길이가 25자를 초과하면 앞 25글자만 사용
-        if (id.Length > 25)
+        // 최대 글자 수 제한
+        if (id.Length > 15)
         {
-            id = id.Substring(0, 25);
+            id = id.Substring(0, 15);
         }
 
         DisplayId = id;          // 프로퍼티에 할당하며, 로그인 후 DisplayName으로 설정됨
         LoginWithCustomID();     // PlayFab 로그인 및 DisplayName 업데이트
                                  
 
-        var tUI = FindFirstObjectByType<MainSceneDisplayIDUI>();
-        if (tUI != null) tUI.UpdateUI();
+        var tUI = FindFirstObjectByType<MainSceneUIManager>();
+        if (tUI != null)
+        {
+            tUI.UpdateUI();
+        }
     }
 
     public void Init()
@@ -85,7 +88,15 @@ public class PlayFabLeaderboardManager : MonoBehaviour
         {
             Debug.Log("PlayFab 로그인 성공");
             _isLoggedIn = true;
-            UpdateDisplayName(DisplayId); // 로그인 직후 DisplayName 설정
+
+            // 로그인한 사용자의 DisplayName 확인
+            var tDisplayName = result.InfoResultPayload?.PlayerProfile?.DisplayName;
+
+            // 이미 같은 이름이면 생략, 다르면 갱신
+            if (tDisplayName != DisplayId)
+            {
+                UpdateDisplayName(DisplayId);
+            }
         },
         error =>
         {
@@ -95,7 +106,6 @@ public class PlayFabLeaderboardManager : MonoBehaviour
 
     private void UpdateDisplayName(string newName)
     {
-        // PlayFab 내 사용자 DisplayName 갱신 요청
         var nameReq = new UpdateUserTitleDisplayNameRequest
         {
             DisplayName = newName
@@ -107,7 +117,15 @@ public class PlayFabLeaderboardManager : MonoBehaviour
         },
         err =>
         {
-            Debug.LogWarning("DisplayName 설정 실패: " + err.GenerateErrorReport());
+            if (err.Error == PlayFabErrorCode.NameNotAvailable)
+            {
+                Debug.LogWarning($"이미 사용 중인 DisplayName: {newName}");
+                // 랜덤 문자열 붙여서 재시도할 수 있음
+            }
+            else
+            {
+                Debug.LogWarning("DisplayName 설정 실패: " + err.GenerateErrorReport());
+            }
         });
     }
 
@@ -145,32 +163,29 @@ public class PlayFabLeaderboardManager : MonoBehaviour
         });
     }
 
-    public void LoadScore(Action onSuccess = null, Action<string> onError = null)
+
+    public void LoadLeaderboard(Action<List<PlayerLeaderboardEntry>> onSuccess, Action<string> onError = null)
     {
-        // 로그인 상태 확인
         if (!_isLoggedIn)
         {
             onError?.Invoke("Not logged in");
             return;
         }
 
-        // HighScore 통계 조회 요청
-        var getReq = new GetPlayerStatisticsRequest
+        var request = new GetLeaderboardRequest
         {
-            StatisticNames = new List<string> { "HighScore" }
+            StatisticName = "HighScore",
+            StartPosition = 0,
+            MaxResultsCount = 30
         };
 
-        PlayFabClientAPI.GetPlayerStatistics(getReq, res =>
+        PlayFabClientAPI.GetLeaderboard(request, result =>
         {
-            var stat = res.Statistics.Find(s => s.StatisticName == "HighScore");
-            _Score = stat != null ? stat.Value : 0;
-            Debug.Log($"점수 로드 성공: {_Score}");
-            onSuccess?.Invoke();
-        },
-        err =>
+            onSuccess?.Invoke(result.Leaderboard);
+        }, error =>
         {
-            Debug.LogError("점수 로드 실패: " + err.GenerateErrorReport());
-            onError?.Invoke(err.GenerateErrorReport());
+            Debug.LogError("리더보드 로딩 실패: " + error.GenerateErrorReport());
+            onError?.Invoke(error.GenerateErrorReport());
         });
     }
 }
