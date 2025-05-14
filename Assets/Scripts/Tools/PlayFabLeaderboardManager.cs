@@ -7,8 +7,8 @@ using PlayFab.ClientModels;
 
 public class PlayFabLeaderboardManager : MonoBehaviour
 {
-    public static PlayFabLeaderboardManager _Inst; // 싱글톤 인스턴스
-    private bool _isLoggedIn = false;                // 로그인 상태 플래그
+    public static PlayFabLeaderboardManager _Inst; 
+    private bool _isLoggedIn = false;            // 로그인 상태 플래그
 
     // 점수 관리 필드와 프로퍼티
     private int _Score = 0;

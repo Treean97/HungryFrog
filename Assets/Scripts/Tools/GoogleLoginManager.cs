@@ -1,52 +1,63 @@
+//using UnityEngine;
 //using GooglePlayGames;
 //using GooglePlayGames.BasicApi;
-//using UnityEngine;
+//using System;
 
 //public class GoogleLoginManager : MonoBehaviour
 //{
-//    public static string _PlayGamesID;
+//    public static GoogleLoginManager _Inst;
 
-//    void Start()
+//    private void Awake()
+//    {
+//        if (_Inst == null)
+//        {
+//            _Inst = this;
+//            DontDestroyOnLoad(gameObject);
+//        }
+//        else
+//        {
+//            Destroy(gameObject);
+//        }
+//    }
+
+//    private void Start()
+//    {
+//        InitializeGPGS();
+//    }
+
+//    private void InitializeGPGS()
 //    {
 //        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
-//            .RequestServerAuthCode(false)
-//            .RequestEmail()
+//            .RequestServerAuthCode(false)  // true면 서버검증용, false는 간단하게 로그인만
 //            .RequestIdToken()
 //            .Build();
 
 //        PlayGamesPlatform.InitializeInstance(config);
 //        PlayGamesPlatform.Activate();
 
-//        PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptOnce, (result) =>
+//        TryGoogleLogin();
+//    }
+
+//    private void TryGoogleLogin()
+//    {
+//        Social.localUser.Authenticate(success =>
 //        {
-//            if (result == SignInStatus.Success)
+//            if (success)
 //            {
-//                _PlayGamesID = Social.localUser.id;
-//                Debug.Log("GPGS 로그인 성공: " + _PlayGamesID);
-//                PlayFabLogin(_PlayGamesID); // → PlayFab 연동
+//                Debug.Log("GPGS 로그인 성공");
+
+//                string idToken = PlayGamesPlatform.Instance.GetIdToken();
+
+//                // PlayFab 로그인 시도 (Google ID 기반)
+//                PlayFabLeaderboardManager._Inst.LoginWithGoogle(idToken);
 //            }
 //            else
 //            {
-//                Debug.LogError("GPGS 로그인 실패");
+//                Debug.LogWarning("GPGS 로그인 실패 → 커스텀 ID 사용");
+
+//                // Fallback → CustomID 로그인
+//                PlayFabLeaderboardManager._Inst.LoginWithCustomID();
 //            }
-//        });
-//    }
-
-//    void PlayFabLogin(string tGooglePlayId)
-//    {
-//        var request = new PlayFab.ClientModels.LoginWithGooglePlayGamesServicesRequest
-//        {
-//            TitleId = "YOUR_PLAYFAB_TITLE_ID", // PlayFab에서 확인한 Title ID
-//            PlayerId = tGooglePlayId,
-//            CreateAccount = true
-//        };
-
-//        PlayFab.PlayFabClientAPI.LoginWithGooglePlayGamesServices(request, result =>
-//        {
-//            Debug.Log("PlayFab 로그인 성공");
-//        }, error =>
-//        {
-//            Debug.LogError("PlayFab 로그인 실패: " + error.GenerateErrorReport());
 //        });
 //    }
 //}
