@@ -1,63 +1,46 @@
-//using UnityEngine;
-//using GooglePlayGames;
-//using GooglePlayGames.BasicApi;
-//using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using TMPro;
 
-//public class GoogleLoginManager : MonoBehaviour
-//{
-//    public static GoogleLoginManager _Inst;
+public class GoogleLoginManager : MonoBehaviour
+{
+    public TextMeshProUGUI logText;
 
-//    private void Awake()
-//    {
-//        if (_Inst == null)
-//        {
-//            _Inst = this;
-//            DontDestroyOnLoad(gameObject);
-//        }
-//        else
-//        {
-//            Destroy(gameObject);
-//        }
-//    }
+    void Start()
+    {
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+        SignIn();
+    }
 
-//    private void Start()
-//    {
-//        InitializeGPGS();
-//    }
+    public void SignIn()
+    {
+        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+    }
 
-//    private void InitializeGPGS()
-//    {
-//        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
-//            .RequestServerAuthCode(false)  // true면 서버검증용, false는 간단하게 로그인만
-//            .RequestIdToken()
-//            .Build();
+    internal void ProcessAuthentication(SignInStatus status)
+    {
+        if (status == SignInStatus.Success)
+        {
+            // Continue with Play Games Services
+            // Perfectly login success
 
-//        PlayGamesPlatform.InitializeInstance(config);
-//        PlayGamesPlatform.Activate();
+            string tName = PlayGamesPlatform.Instance.GetUserDisplayName();
+            string tId = PlayGamesPlatform.Instance.GetUserId();
+            string tImgUrl = PlayGamesPlatform.Instance.GetUserImageUrl();
 
-//        TryGoogleLogin();
-//    }
-
-//    private void TryGoogleLogin()
-//    {
-//        Social.localUser.Authenticate(success =>
-//        {
-//            if (success)
-//            {
-//                Debug.Log("GPGS 로그인 성공");
-
-//                string idToken = PlayGamesPlatform.Instance.GetIdToken();
-
-//                // PlayFab 로그인 시도 (Google ID 기반)
-//                PlayFabLeaderboardManager._Inst.LoginWithGoogle(idToken);
-//            }
-//            else
-//            {
-//                Debug.LogWarning("GPGS 로그인 실패 → 커스텀 ID 사용");
-
-//                // Fallback → CustomID 로그인
-//                PlayFabLeaderboardManager._Inst.LoginWithCustomID();
-//            }
-//        });
-//    }
-//}
+            logText.text = "Success \n" + tName;
+        }
+        else
+        {
+            logText.text = "Sign in Failed!";
+            // Disable your integration with Play Games Services or show a login button
+            // to ask users to sign-in. Clicking it should call
+            // PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication).
+            // Login failed
+        }
+    }
+}
