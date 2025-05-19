@@ -1,37 +1,56 @@
-name: Unity Build
+name: UnityBuildAAB
 
 on:
   workflow_dispatch:
 
+permissions: write-all
+
 jobs:
-  build:
+  buildForAndroid:
+    name: Build Android AAB
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      # 1) 소스 체크아웃
+      - name: Check Out
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
 
-      - name: Install Unity
-        run: |
-          wget https://download.unity3d.com/download_unity/6000.0.47f1/UnitySetup-6000.0.47f1
-          chmod +x UnitySetup-6000.0.47f1
-          ./UnitySetup-6000.0.47f1 --unattended --install-location /opt/Unity
+      # 2) Library 캐시
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
 
-      - name: Build project
-        run: |
-          /opt/Unity/Editor/Unity -batchmode -nographics -quit \
-            -projectPath . \
-            -executeMethod BuildScript.BuildAndroid
+      # 3) Keystore 복호화
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > user.keystore
+
+      # 4) Unity 빌드 (AAB + keystore 서명, 전체 로그 보기)
+      - name: Unity Build
+        uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          UNITY_LICENSE:      ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL:        ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD:     ${{ secrets.UNITY_PASSWORD }}
+          KEYSTORE_PASSWORD:  ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:          ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:       ${{ secrets.KEY_PASSWORD }}
+        with:
+          targetPlatform: Android
+          unityVersion:    6000.0.47f1
+          buildMethod:     BuildScript.BuildAndroid
+          customParameters: >
+            -logFile -  
 
-      - name: Upload Build Artifact
+      # 5) 생성된 AAB 업로드
+      - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build-Android
-          path: build
+          name: Build-AAB
+          path: build/app.aab
