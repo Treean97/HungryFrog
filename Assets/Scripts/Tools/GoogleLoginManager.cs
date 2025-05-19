@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
-using TMPro;
 
 public class GoogleLoginManager : MonoBehaviour
 {
-    public TextMeshProUGUI logText;
+
 
     void Start()
     {
         PlayGamesPlatform.DebugLogEnabled = true;
         PlayGamesPlatform.Activate();
-        SignIn();
+
+        if (!PlayGamesPlatform.Instance.localUser.authenticated)
+        {
+            SignIn();
+        }
+        else
+        {
+            Debug.Log("이미 로그인됨: " + PlayGamesPlatform.Instance.localUser.userName);
+        }
     }
 
     public void SignIn()
@@ -25,22 +32,15 @@ public class GoogleLoginManager : MonoBehaviour
     {
         if (status == SignInStatus.Success)
         {
-            // Continue with Play Games Services
-            // Perfectly login success
-
             string tName = PlayGamesPlatform.Instance.GetUserDisplayName();
             string tId = PlayGamesPlatform.Instance.GetUserId();
             string tImgUrl = PlayGamesPlatform.Instance.GetUserImageUrl();
 
-            logText.text = "Success \n" + tName;
+            Debug.Log($"GPGS 로그인 성공: {tName} / {tId} / {tImgUrl}");
         }
         else
         {
-            logText.text = "Sign in Failed!";
-            // Disable your integration with Play Games Services or show a login button
-            // to ask users to sign-in. Clicking it should call
-            // PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication).
-            // Login failed
+            Debug.LogWarning("GPGS 로그인 실패");
         }
     }
 }
