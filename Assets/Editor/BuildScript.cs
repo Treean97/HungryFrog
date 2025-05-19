@@ -1,11 +1,15 @@
-using System.Linq;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using System.Linq;
 
 public class BuildScript
 {
     public static void BuildAndroid()
     {
+        // Keystore 설정 먼저 적용
+        SetKeystoreSettings.Apply();
+
+        // 씬 목록 가져오기
         string[] scenes = EditorBuildSettings.scenes
             .Where(scene => scene.enabled)
             .Select(scene => scene.path)
