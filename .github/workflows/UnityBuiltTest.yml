@@ -43,9 +43,7 @@ jobs:
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       with:
         targetPlatform: Android
-        customParameters: >
-          -executeMethod SetKeystoreSettings.Apply
-          -executeMethod BuildScript.BuildAndroid
+        CustomParameters: '-executeMethod BuildScript.BuildAndroid'
 
     # Step5 - Upload Build File
     - name: Upload Build File
