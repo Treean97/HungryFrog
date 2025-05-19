@@ -209,9 +209,13 @@ public class MainSceneUIManager : MonoBehaviour
 
         string tInputText = _IDInputField.text.Trim();
 
+
+
         if (string.IsNullOrEmpty(tInputText))
         {
-            Debug.LogWarning("입력값이 없습니다.");
+            _UIIsRunning = false;
+            _CurrentCoroutine = StartCoroutine(MoveUICo(_ChangeIDUI, _UIWaitingPosition));
+            SoundManager._Inst.PlaySFX(SoundCategory.SFX, "UIPop");
             return;
         }
 
