@@ -4,43 +4,50 @@ on:
   workflow_dispatch:
 
 permissions: write-all
-  
+
 jobs:
-  #Job 설정
-  buildForAndroid: 
+  buildForAndroid:
     name: Build Android
     runs-on: ubuntu-latest
+
     steps:
+    # Step1 - Check Out
+    - name: Check Out
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        lfs: true
 
-      # Step1 - Check Out
-      - name: Check Out
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
+    # Step2 - Cache Library
+    - name: Cache Library
+      uses: actions/cache@v4
+      with:
+        path: Library
+        key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+        restore-keys: |
+          Library-
 
-      # Step2 - Cache Library
-      - name: Cache Library
-        uses: actions/cache@v4
-        with: 
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
+    # Step3 - 복호화: keystore 복원
+    - name: Decode keystore
+      run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > user.keystore
 
-      # Step3 - Unity Build
-      - name: Unity Build
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          targetPlatform: Android
-      
-      # Step4 - Upload Build File
-      - name: Upload Build File
-        uses: actions/upload-artifact@v4
-        with:
-          name: Build-Android
-          path: build
+    # Step4 - Unity Build
+    - name: Unity Build
+      uses: game-ci/unity-builder@v4
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      with:
+        targetPlatform: Android
+        CustomParameters: '-executeMethod BuildScript.BuildAndroid'
+
+    # Step5 - Upload Build File
+    - name: Upload Build File
+      uses: actions/upload-artifact@v4
+      with:
+        name: Build-Android
+        path: build
