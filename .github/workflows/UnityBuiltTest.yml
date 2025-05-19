@@ -48,7 +48,7 @@ jobs:
 
       # 5) 생성된 AAB 업로드
       - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build-AAB
           path: build/app.aab
