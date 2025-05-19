@@ -1,59 +1,37 @@
-name: UnityBuildTest
+name: Unity Build
 
 on:
   workflow_dispatch:
 
-permissions: write-all
-
 jobs:
-  buildForAndroid:
-    name: Build Android
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    # Step1 - Check Out
-    - name: Check Out
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        lfs: true
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # Step2 - Cache Library
-    - name: Cache Library
-      uses: actions/cache@v4
-      with:
-        path: Library
-        key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-        restore-keys: |
-          Library-
+      - name: Install Unity
+        run: |
+          wget https://download.unity3d.com/download_unity/6000.0.47f1/UnitySetup-6000.0.47f1
+          chmod +x UnitySetup-6000.0.47f1
+          ./UnitySetup-6000.0.47f1 --unattended --install-location /opt/Unity
 
-    # Step3 - 복호화: keystore 복원
-    - name: Decode keystore
-      run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > user.keystore
+      - name: Build project
+        run: |
+          /opt/Unity/Editor/Unity -batchmode -nographics -quit \
+            -projectPath . \
+            -executeMethod BuildScript.BuildAndroid
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    # Step4 - Unity 설치
-    - name: Setup Unity
-      uses: game-ci/unity-setup@v2
-      with:
-        unityVersion: 6000.0.47f1
-
-    # Step5 - Unity CLI로 빌드 실행 (executeMethod 직접 호출)
-    - name: Run Unity Build Script
-      run: |
-        unity -batchmode -nographics -quit \
-          -projectPath . \
-          -executeMethod BuildScript.BuildAndroid
-      env:
-        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-    # Step6 - 빌드 결과 업로드
-    - name: Upload Build File
-      uses: actions/upload-artifact@v4
-      with:
-        name: Build-Android
-        path: build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-Android
+          path: build
