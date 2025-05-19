@@ -27,39 +27,27 @@ jobs:
         restore-keys: |
           Library-
 
-    # ✅ Step3 - Unity 설치 (CLI 명령어 사용 가능하게 함)
-    - name: Setup Unity
-      uses: game-ci/unity-setup@v2
-      with:
-        unityVersion: 6000.0.47f1
-
-    # Step4 - 복호화: keystore 복원
+    # Step3 - 복호화: keystore 복원
     - name: Decode keystore
       run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > user.keystore
 
-    # Step5 - PlayerSettings에 keystore 정보 설정
-    - name: Apply Keystore Settings
-      run: |
-        unity -batchmode -nographics -quit \
-          -projectPath . \
-          -executeMethod SetKeystoreSettings.Apply
-      env:
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-    # Step6 - Unity Build
+    # Step4 - Unity Build
     - name: Unity Build
       uses: game-ci/unity-builder@v4
       env:
         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
         UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       with:
         targetPlatform: Android
-        customParameters: '-executeMethod BuildScript.BuildAndroid'
+        customParameters: >
+          -executeMethod SetKeystoreSettings.Apply
+          -executeMethod BuildScript.BuildAndroid
 
-    # Step7 - Upload Build File
+    # Step5 - Upload Build File
     - name: Upload Build File
       uses: actions/upload-artifact@v4
       with:
