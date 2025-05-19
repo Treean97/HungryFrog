@@ -43,7 +43,7 @@ jobs:
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       with:
         targetPlatform: Android
-        CustomParameters: '-executeMethod BuildScript.BuildAndroid'
+        customParameters: '-executeMethod BuildScript.BuildAndroid'
 
     # Step5 - Upload Build File
     - name: Upload Build File
