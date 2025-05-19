@@ -61,3 +61,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Keystore 보안 파일 무시
+*.keystore
