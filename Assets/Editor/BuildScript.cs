@@ -25,10 +25,10 @@ public class BuildScript
             options = BuildOptions.None
         };
 
-        BuildReport report = BuildPipeline.BuildPlayer(options);
+        var report = BuildPipeline.BuildPlayer(options);
         if (report.summary.result != BuildResult.Succeeded)
         {
             throw new System.Exception("Build failed: " + report.summary.result);
         }
-    }
+    }   
 }
