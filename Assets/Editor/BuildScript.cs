@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 
@@ -5,7 +6,11 @@ public class BuildScript
 {
     public static void BuildAndroid()
     {
-        string[] scenes = { "Assets/Scenes/MainScene.unity" }; // 수정 필요
+        string[] scenes = EditorBuildSettings.scenes
+            .Where(scene => scene.enabled)
+            .Select(scene => scene.path)
+            .ToArray();
+
         EditorUserBuildSettings.buildAppBundle = true;
 
         BuildPlayerOptions options = new BuildPlayerOptions
