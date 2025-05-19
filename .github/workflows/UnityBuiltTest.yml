@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step1 - Checkout
+    # 1. 소스코드 체크아웃
     - name: Check Out
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         lfs: true
 
-    # Step2 - Cache
+    # 2. 라이브러리 캐싱
     - name: Cache Library
       uses: actions/cache@v4
       with:
@@ -27,18 +27,18 @@ jobs:
         restore-keys: |
           Library-
 
-    # Step3 - Keystore 복호화
+    # 3. keystore 복호화
     - name: Decode keystore
       run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > user.keystore
 
-    # Step4 - Unity 설치
+    # 4. Unity 설치 (setup-unity 최신 버전 사용)
     - name: Setup Unity
-      uses: game-ci/unity-setup@v2
+      uses: unity-actions/setup-unity@v3
       with:
         unityVersion: 6000.0.47f1
 
-    # Step5 - Unity 빌드 실행 (스크립트 호출)
-    - name: Build with BuildScript
+    # 5. 빌드 실행
+    - name: Run Unity Build
       run: |
         unity -batchmode -nographics -quit \
           -projectPath . \
@@ -51,8 +51,8 @@ jobs:
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    # Step6 - 빌드 파일 업로드
-    - name: Upload AAB Artifact
+    # 6. 빌드 결과 업로드
+    - name: Upload AAB
       uses: actions/upload-artifact@v4
       with:
         name: Build-AAB
