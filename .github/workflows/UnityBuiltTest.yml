@@ -1,46 +1,36 @@
-name: Build Android AAB
+name: Unity Actions
 
 on:
   workflow_dispatch:
 
-permissions: write-all
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  build-android-aab:
-    name: Build Android AAB
+  buildForAndroidPlatform:
+    name: Build For Android Platform
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
+      - uses: actions/checkout@v4
 
-      - name: Cache Library
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**','Packages/**','ProjectSettings/**') }}
-          restore-keys: |
-            Library-
+          key: Library-Android
 
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > user.keystore
-
-      - name: Unity Build AAB
-        uses: game-ci/unity-builder@v4
+      - uses: game-ci/unity-builder@v4
         with:
-          unityVersion: 6000.0.47f1
           targetPlatform: Android
-          buildName: HungryFrog.aab
-          buildPath: Builds/Android
-          keystoreName: user.keystore
-          keystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
-          keystoreAliasName: ${{ secrets.KEY_ALIAS }}
-          keystoreAliasPass: ${{ secrets.KEY_PASSWORD }}
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          androidAppBundle: true
+          androidKeystoreName:    user.keystore
+          androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
+          androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
+          androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
+          androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
+          unityVersion:           6000.0.47f1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-Android
+          path: build/Android
