@@ -1,55 +1,54 @@
-name: Build Android AAB
-
-# 수동 트리거만 허용
+name: BuildTest
 on:
   workflow_dispatch:
 
-# Unity 인증 정보
-env:
-  UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
-  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-  UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
-
 jobs:
-  build_android_aab:
-    name: Build Android AAB
+  build:
+    name: BuildTest
     runs-on: ubuntu-latest
 
+    # 이 그룹에 이미 실행 중인 빌드가 있으면 취소합니다
+    concurrency:
+      group: unity-build
+      cancel-in-progress: true
+
+    # Unity Personal 라이선스 인증에 필요한 시크릿
+    env:
+      UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
+
     steps:
-      # 1. 레포지토리 체크아웃
+      # 1) 소스 체크아웃
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
-      # 2. Library 캐시 (빌드 속도 향상)
-      #- name: Cache Library folder
-        #uses: actions/cache@v4
-        #with:
-          #path: Library
-          #key: ${{ runner.os }}-unity-lib-${{ hashFiles('Packages/packages-lock.json','ProjectSettings/ProjectSettings.asset') }}
-          #restore-keys: |
-            #${{ runner.os }}-unity-lib-
+      # 2) Library 캐시 (선택)
+      - name: Cache Library folder
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('Assets/**','ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
 
-      # 3. Unity로 AAB 빌드
-      - name: Build AAB with Unity
+      # 3) Unity AAB 빌드
+      - name: Build project
         uses: game-ci/unity-builder@v4
         with:
-          # Unity 에디터 버전 (프로젝트에 맞게 조정)
-          unityVersion: 6000.0.47f1
-
-          # Android 타겟, AAB 형식으로 출력
           targetPlatform: Android
           androidExportType: androidAppBundle
-
-          # Keystore (Base64 인코딩된 Binary)
           androidKeystoreName:    user.keystore
           androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
 
-      # 4. 생성된 AAB 업로드
+      # 4) 생성된 AAB 업로드
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: android-aab
+          name: build-Android
           path: build/Android/*.aab
