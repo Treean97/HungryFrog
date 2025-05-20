@@ -205,9 +205,8 @@ public class GameSceneUIManager : MonoBehaviour
         SceneManager.LoadScene("LoadingScene");
     }
 
-    public void QuitBtn()
+    public void GoToMainBtn()
     {
         SceneManager.LoadScene("MainScene");
     }
-
 }

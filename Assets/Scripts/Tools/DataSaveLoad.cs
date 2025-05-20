@@ -26,8 +26,6 @@ public class DataSaveLoad : MonoBehaviour
         LoadData();        // 시작 시 디스크에서 불러오기
         LoadSoundVolume(); // 볼륨 설정 적용
 
-        PlayFabLeaderboardManager._Inst.Init();
-
     }
 
     public void SaveData()
