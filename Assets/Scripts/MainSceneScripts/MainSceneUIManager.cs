@@ -65,6 +65,9 @@ public class MainSceneUIManager : MonoBehaviour
 
         // ID 갱신
         UpdateUI();
+
+        // UI 활성화
+        SetActiveUI();
     }
 
     // Update is called once per frame
@@ -88,6 +91,13 @@ public class MainSceneUIManager : MonoBehaviour
         _ChangeIDUI.transform.localPosition = _UIWaitingPosition;
     }
 
+    void SetActiveUI()
+    {
+        _SettingUI.SetActive(true);
+        _LeaderBoardUI.SetActive(true);
+        _ChangeIDUI.SetActive(true);
+    }
+
 
     // 터치 및 클릭 감지
     bool IsInputPressed()
@@ -95,6 +105,7 @@ public class MainSceneUIManager : MonoBehaviour
         return Input.GetMouseButtonDown(0) ||
            (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
     }
+
 
     // Setting UI
     public void SettingUIOn()

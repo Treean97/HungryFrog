@@ -45,6 +45,9 @@ public class GameSceneUIManager : MonoBehaviour
         _SettingUI.transform.localPosition = _UIWaitingPosition;
         _EndingUI.transform.localPosition = _UIWaitingPosition;
 
+        // 활성화
+        SetActiveUI();
+
         // bool 초기화
         _UIIsRunning = false;
 
@@ -53,6 +56,12 @@ public class GameSceneUIManager : MonoBehaviour
 
         // InfoUI 초기화
         SetInfoUI();
+    }
+
+    void SetActiveUI()
+    {
+        _SettingUI.SetActive(true);
+        _EndingUI.SetActive(true);
     }
 
     // Update is called once per frame
