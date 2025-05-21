@@ -1,54 +1,41 @@
 name: BuildTest
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   build:
-    name: BuildTest
     runs-on: ubuntu-latest
-
-    # 이 그룹에 이미 실행 중인 빌드가 있으면 취소합니다
-    concurrency:
-      group: unity-build
-      cancel-in-progress: true
-
-    # Unity Personal 라이선스 인증에 필요한 시크릿
-    env:
-      UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
-      UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
-      UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
-
     steps:
-      # 1) 소스 체크아웃
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+      - uses: actions/checkout@v4
+      # ↓ Library 캐시 제거
+      # - uses: actions/cache@v4
+      #   with:
+      #     path: Library
+      #     key: Library-${{ runner.os }}-${{ hashFiles('Assets/**','ProjectSettings/**') }}
 
-      # 2) Library 캐시 (선택)
-      - name: Cache Library folder
+      # 필요하다면 PackageCache만 캐시
+      - name: Cache PackageCache
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-${{ runner.os }}-${{ hashFiles('Assets/**','ProjectSettings/**') }}
-          restore-keys: |
-            Library-${{ runner.os }}-
+          path: Library/PackageCache
+          key: pkg-${{ runner.os }}-${{ hashFiles('Packages/packages-lock.json') }}
 
-      # 3) Unity APK 빌드
-      - name: Build project (APK)
+      # Temp/ build/ 잔여물 삭제
+      - name: Clean before Unity Build
+        run: |
+          rm -rf Temp build
+
+      - name: Unity Build (APK)
         uses: game-ci/unity-builder@v4
         with:
           targetPlatform: Android
-          androidExportType: androidPackage    # ← 여기만 변경
-          androidKeystoreName:    user.keystore
-          androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
-          androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
-          androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
+          androidExportType: androidPackage
+          androidKeystoreName: user.keystore
+          androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
+          androidKeyaliasName: ${{ secrets.KEY_ALIAS }}
+          androidKeyaliasPass: ${{ secrets.KEY_PASSWORD }}
 
-      # 4) 생성된 APK 업로드
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: build-Android-apk
           path: build/Android/*.apk
