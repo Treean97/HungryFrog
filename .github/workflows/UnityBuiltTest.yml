@@ -34,21 +34,21 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # 3) Unity AAB 빌드
-      - name: Build project
+      # 3) Unity APK 빌드
+      - name: Build project (APK)
         uses: game-ci/unity-builder@v4
         with:
           targetPlatform: Android
-          androidExportType: androidAppBundle
+          androidExportType: apk                  # ← AAB 대신 APK
           androidKeystoreName:    user.keystore
           androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
 
-      # 4) 생성된 AAB 업로드
-      - name: Upload AAB artifact
+      # 4) 생성된 APK 업로드
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-Android
-          path: build/Android/*.aab
+          name: build-Android-apk
+          path: build/Android/*.apk               # ← AAB 대신 APK
