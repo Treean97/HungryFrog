@@ -1,5 +1,6 @@
 name: BuildTest
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,13 +13,8 @@ jobs:
       UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
 
     steps:
-      - uses: actions/checkout@v4
-
-      # ↓ Library 캐시 제거
-      # - uses: actions/cache@v4
-      #   with:
-      #     path: Library
-      #     key: Library-${{ runner.os }}-${{ hashFiles('Assets/**','ProjectSettings/**') }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       # 필요하다면 PackageCache만 캐시
       - name: Cache PackageCache
@@ -29,16 +25,21 @@ jobs:
 
       # Temp/ build/ 잔여물 삭제
       - name: Clean before Unity Build
-        run: |
-          rm -rf Temp build
+        run: rm -rf Temp build
 
       - name: Unity Build (APK)
         uses: game-ci/unity-builder@v4
-        # androidExportType 아래와 같이 설정
         with:
           targetPlatform: Android
           androidExportType: androidPackage
           androidKeystoreName:    user.keystore
           androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName:    ${{ secrets.KEY_ALIAS_
+          androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
+          androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-Android-apk
+          path: build/Android/*.apk
