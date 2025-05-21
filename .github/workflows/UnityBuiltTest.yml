@@ -39,7 +39,7 @@ jobs:
         uses: game-ci/unity-builder@v4
         with:
           targetPlatform: Android
-          androidExportType: apk                  # ← AAB 대신 APK
+          androidExportType: androidPackage    # ← 여기만 변경
           androidKeystoreName:    user.keystore
           androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
@@ -51,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-Android-apk
-          path: build/Android/*.apk               # ← AAB 대신 APK
+          path: build/Android/*.apk
