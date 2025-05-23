@@ -1,24 +1,32 @@
-name: Build Android AAB (Host Unity)
+# .github/workflows/unity-android-build.yml
+name: Android AAB Build
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  UNITY_VERSION: 6000.0.47f1
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+  KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
+  KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
 
 jobs:
-  build:
-    runs-on: [self-hosted, Windows, X64]
-    defaults:
-      run:
-        shell: powershell
-
-    env:
-      KEYSTORE_BASE64:   ${{ secrets.KEYSTORE_BASE64 }}
-      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
+  build-android:
+    name: 🐸 Build Android AAB
+    runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Decode Android Keystore
+      - name: Decode Android keystore
+        shell: pwsh
         run: |
           [IO.File]::WriteAllBytes(
             'user.keystore',
@@ -26,35 +34,29 @@ jobs:
           )
 
       - name: Activate Unity License
+        shell: pwsh
         run: |
-          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
-          & $unityPath -batchmode -nographics `
-            -username $Env:UNITY_EMAIL `
-            -password $Env:UNITY_PASSWORD `
-            -quit
+          $unity = "C:\Program Files\Unity\Hub\Editor\$Env:UNITY_VERSION\Editor\Unity.exe"
+          & $unity -batchmode -nographics `
+              -projectPath ${{ github.workspace }} `
+              -username   $Env:UNITY_EMAIL `
+              -password   $Env:UNITY_PASSWORD `
+              -quit
 
       - name: Build Android AAB
+        shell: pwsh
         run: |
-          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
-          & $unityPath -batchmode -nographics `
-            -projectPath "${{ github.workspace }}" `
-            -executeMethod BuildScript.BuildAndroid `
-            -buildTarget Android `
-            -logFile "${{ github.workspace }}\build.log" `
-            -quit
-
-      - name: Show Unity Log
-        if: always()
-        run: |
-          type build.log
+          $unity = "C:\Program Files\Unity\Hub\Editor\$Env:UNITY_VERSION\Editor\Unity.exe"
+          & $unity -batchmode -nographics `
+              -projectPath ${{ github.workspace }} `
+              -executeMethod BuildScript.BuildAndroid `
+              -buildTarget Android `
+              -quit `
+              -logFile build.log
 
       - name: Return Unity License
+        shell: pwsh
         run: |
-          & 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe' `
-            -batchmode -returnlicense -quit
-
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-Android-aab
-          path: build/app.aab
+          $unity = "C:\Program Files\Unity\Hub\Editor\$Env:UNITY_VERSION\Editor\Unity.exe"
+          & $unity -batchmode -nographics `
+              -projectPath ${{ github.workspa
