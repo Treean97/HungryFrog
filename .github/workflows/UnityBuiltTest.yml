@@ -1,7 +1,6 @@
 name: Build Android AAB (Host Unity)
 
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   build:
@@ -11,27 +10,13 @@ jobs:
         shell: powershell
 
     env:
-      UNITY_EMAIL:       ${{ secrets.UNITY_EMAIL }}
-      UNITY_PASSWORD:    ${{ secrets.UNITY_PASSWORD }}
       KEYSTORE_BASE64:   ${{ secrets.KEYSTORE_BASE64 }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
       KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Cache PackageCache
-        uses: actions/cache@v4
-        with:
-          path: Library/PackageCache
-          key: pkg-${{ runner.os }}-${{ hashFiles('Packages/packages-lock.json') }}
-
-      - name: Clean Temp & build folders
-        run: |
-          if (Test-Path Temp)  { Remove-Item -Recurse -Force Temp }
-          if (Test-Path build) { Remove-Item -Recurse -Force build }
+      - uses: actions/checkout@v4
 
       - name: Decode Android Keystore
         run: |
@@ -48,7 +33,7 @@ jobs:
             -password $Env:UNITY_PASSWORD `
             -quit
 
-      - name: Build Android AAB with Unity on Host
+      - name: Build Android AAB
         run: |
           $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
           & $unityPath -batchmode -nographics `
@@ -58,8 +43,8 @@ jobs:
             -logFile "${{ github.workspace }}\build.log" `
             -quit
 
-      - name: Dump Unity Log on failure
-        if: failure()
+      - name: Show Unity Log
+        if: always()
         run: |
           type build.log
 
