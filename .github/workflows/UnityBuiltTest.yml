@@ -18,13 +18,6 @@ jobs:
           - Android
 
     steps:
-      - name: Check disk usage before cleanup
-        run: |
-          echo === 전체 디스크 사용량 ===
-          df -h    # Linux 명령이므로 윈도우에선 주석 처리하거나 WSL 사용
-          echo === 워크스페이스 크기 ===
-          du -sh $Env:GITHUB_WORKSPACE  # PowerShell에서 du 없으면 대체 커맨드 사용
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
