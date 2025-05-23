@@ -10,9 +10,7 @@ env:
 jobs:
   build:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on:
-      - self-hosted
-      - windows
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -27,15 +25,6 @@ jobs:
           echo === 워크스페이스 크기 ===
           du -sh $Env:GITHUB_WORKSPACE  # PowerShell에서 du 없으면 대체 커맨드 사용
 
-      - name: Free Disk Space for Android
-        if: matrix.targetPlatform == 'Android'
-        run: |
-          # 윈도우 환경이므로 필요에 따라 WSL 커맨드를 사용하거나
-          # 이하 커맨드는 리눅스 셸용 예시입니다.
-          df -h
-          sudo swapoff -a
-          sudo apt clean
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -49,6 +38,15 @@ jobs:
           restore-keys: |
             Library-${{ env.UNITY_VERSION }}-
             Library-
+
+      # Free up disk space
+      - name: Free Disk Space for Android
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker rmi $(docker images -q)
+          df -h
 
       - name: Build with game-ci/unity-builder
         uses: game-ci/unity-builder@v4
