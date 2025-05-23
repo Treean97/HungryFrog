@@ -1,3 +1,4 @@
+# .github/workflows/unity-android-build.yml
 name: Build project
 
 on:
@@ -16,9 +17,20 @@ jobs:
           - Android
 
     steps:
+      # 1) 전체 디스크 사용량과 워크스페이스 크기를 찍어 봅니다.
+      - name: Check disk usage before cleanup
+        run: |
+          echo "=== 전체 디스크 사용량 ==="
+          df -h
+          echo ""
+          echo "=== 워크스페이스 크기 ==="
+          du -sh $GITHUB_WORKSPACE
+
+      # 2) Android 빌드에 불필요한 파일을 지워 여유 공간을 확보합니다.
       - name: Free Disk Space for Android
         if: matrix.targetPlatform == 'Android'
         run: |
+          echo "=== Cleanup start ==="
           df -h
           sudo swapoff -a
           sudo rm -f /swapfile
@@ -27,13 +39,16 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           sudo apt clean
           docker rmi $(docker image ls -aq) || true
+          echo "=== Cleanup end ==="
           df -h
 
+      # 3) 리포지토리 체크아웃
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           lfs: true
 
+      # 4) Library 캐시
       - name: Cache Library
         uses: actions/cache@v4
         with:
@@ -43,6 +58,7 @@ jobs:
             Library-${{ env.UNITY_VERSION }}-
             Library-
 
+      # 5) game-ci/unity-builder 로 실제 빌드
       - name: Build with game-ci/unity-builder
         uses: game-ci/unity-builder@v4
         env:
@@ -52,13 +68,14 @@ jobs:
         with:
           version: ${{ env.UNITY_VERSION }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          androidAppBundle: true
+          androidExportType: AppBundle
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName: ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.KEY_PASSWORD }}
 
+      # 6) 아티팩트 업로드
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
