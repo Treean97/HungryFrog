@@ -68,7 +68,7 @@ jobs:
         with:
           version: ${{ env.UNITY_VERSION }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          androidExportType: AppBundle
+          androidExportType: aab
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
