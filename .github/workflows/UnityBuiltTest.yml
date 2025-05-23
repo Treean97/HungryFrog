@@ -11,14 +11,16 @@ jobs:
         shell: powershell
 
     env:
-      # UNITY_EMAIL, UNITY_PASSWORD 제거
-      KEYSTORE_BASE64:     ${{ secrets.KEYSTORE_BASE64 }}
-      KEYSTORE_PASSWORD:   ${{ secrets.KEYSTORE_PASSWORD }}
-      KEY_ALIAS:           ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD:        ${{ secrets.KEY_PASSWORD }}
+      UNITY_EMAIL:       ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD:    ${{ secrets.UNITY_PASSWORD }}
+      KEYSTORE_BASE64:   ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Cache PackageCache
         uses: actions/cache@v4
@@ -38,15 +40,33 @@ jobs:
             [Convert]::FromBase64String($Env:KEYSTORE_BASE64)
           )
 
+      - name: Activate Unity License
+        run: |
+          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
+          & $unityPath -batchmode -nographics `
+            -username $Env:UNITY_EMAIL `
+            -password $Env:UNITY_PASSWORD `
+            -quit
+
       - name: Build Android AAB with Unity on Host
         run: |
           $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
-          & $unityPath `
-            -batchmode -nographics `
+          & $unityPath -batchmode -nographics `
             -projectPath "${{ github.workspace }}" `
             -executeMethod BuildScript.BuildAndroid `
+            -buildTarget Android `
             -logFile "${{ github.workspace }}\build.log" `
             -quit
+
+      - name: Dump Unity Log on failure
+        if: failure()
+        run: |
+          type build.log
+
+      - name: Return Unity License
+        run: |
+          & 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe' `
+            -batchmode -returnlicense -quit
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
