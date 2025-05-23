@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using System.Linq;
 
-public class BuildScript
+public static class BuildScript
 {
     public static void BuildAndroid()
     {

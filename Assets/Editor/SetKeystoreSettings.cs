@@ -1,6 +1,6 @@
 using UnityEditor;
 
-public class SetKeystoreSettings
+public static class SetKeystoreSettings
 {
     [MenuItem("CI/ApplyKeystoreSettings")]
     public static void Apply()
