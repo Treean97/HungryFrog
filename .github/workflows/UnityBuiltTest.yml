@@ -1,35 +1,34 @@
-# .github/workflows/unity-android-build.yml
-name: Build project
+name: UnityBuildTest
 
 on:
   workflow_dispatch:
 
+permissions: write-all
+
 env:
-  UNITY_VERSION: 6000.0.47f1   # ← 사용하실 Unity 버전
-
+  UNITY_VERSION: 6000.0.47f1
+  
 jobs:
-  build:
-    name: Build for ${{ matrix.targetPlatform }}
+  #Job 설정
+  buildForAndroid: 
+    name: Build Android
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        targetPlatform:
-          - Android
-
     steps:
-      - name: Checkout Repository
+
+      # Step1 - Check Out
+      - name: Check Out
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           lfs: true
 
+      # Step2 - Cache Library
       - name: Cache Library
         uses: actions/cache@v4
-        with:
+        with: 
           path: Library
-          key: Library-${{ env.UNITY_VERSION }}-${{ matrix.targetPlatform }}
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-${{ env.UNITY_VERSION }}-
             Library-
 
       # Free up disk space
@@ -41,25 +40,26 @@ jobs:
           docker rmi $(docker images -q)
           df -h
 
-      - name: Build with game-ci/unity-builder
+      # Step3 - Unity Build
+      - name: Unity Build
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
         with:
           version: ${{ env.UNITY_VERSION }}
-          targetPlatform: ${{ matrix.targetPlatform }}
-          runAsHostUser: true
+          targetPlatform: Android
           androidExportType: androidAppBundle
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName: ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.KEY_PASSWORD }}
-
+      
+      # Step4 - Upload Build File
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
-          name: Build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}/*.aab
+          name: Build-Android
+          path: build
