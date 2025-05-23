@@ -12,9 +12,11 @@ jobs:
   #Job 설정
   buildForAndroid: 
     name: Build Android
-    runs-on: self-hosted
+    runs-on: 
+          - self-hosted
+          - linux
+          
     steps:
-
       # Step1 - Check Out
       - name: Check Out
         uses: actions/checkout@v4
