@@ -12,7 +12,7 @@ jobs:
   #Job 설정
   buildForAndroid: 
     name: Build Android
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
 
       # Step1 - Check Out
