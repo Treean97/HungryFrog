@@ -10,45 +10,37 @@ env:
 jobs:
   build:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on:
+      - self-hosted
+      - windows
+
     strategy:
       matrix:
         targetPlatform:
           - Android
 
     steps:
-      # 1) 전체 디스크 사용량과 워크스페이스 크기를 찍어 봅니다.
       - name: Check disk usage before cleanup
         run: |
-          echo "=== 전체 디스크 사용량 ==="
-          df -h
-          echo ""
-          echo "=== 워크스페이스 크기 ==="
-          du -sh $GITHUB_WORKSPACE
+          echo === 전체 디스크 사용량 ===
+          df -h    # Linux 명령이므로 윈도우에선 주석 처리하거나 WSL 사용
+          echo === 워크스페이스 크기 ===
+          du -sh $Env:GITHUB_WORKSPACE  # PowerShell에서 du 없으면 대체 커맨드 사용
 
-      # 2) Android 빌드에 불필요한 파일을 지워 여유 공간을 확보합니다.
       - name: Free Disk Space for Android
         if: matrix.targetPlatform == 'Android'
         run: |
-          echo "=== Cleanup start ==="
+          # 윈도우 환경이므로 필요에 따라 WSL 커맨드를 사용하거나
+          # 이하 커맨드는 리눅스 셸용 예시입니다.
           df -h
           sudo swapoff -a
-          sudo rm -f /swapfile
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
           sudo apt clean
-          docker rmi $(docker image ls -aq) || true
-          echo "=== Cleanup end ==="
-          df -h
 
-      # 3) 리포지토리 체크아웃
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      # 4) Library 캐시
       - name: Cache Library
         uses: actions/cache@v4
         with:
@@ -58,7 +50,6 @@ jobs:
             Library-${{ env.UNITY_VERSION }}-
             Library-
 
-      # 5) game-ci/unity-builder 로 실제 빌드
       - name: Build with game-ci/unity-builder
         uses: game-ci/unity-builder@v4
         env:
@@ -68,14 +59,14 @@ jobs:
         with:
           version: ${{ env.UNITY_VERSION }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          androidExportType: 'androidAppBundle'
+          runAsHostUser: true
+          androidExportType: androidAppBundle
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName: ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.KEY_PASSWORD }}
 
-      # 6) 아티팩트 업로드
       - name: Upload Build File
         uses: actions/upload-artifact@v4
         with:
