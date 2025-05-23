@@ -4,7 +4,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # self-hosted 러너 지정 (윈도우 머신에 설치한 러너라면 반드시 Windows 레이블 포함)
+    runs-on: [self-hosted, Windows, X64]
 
     # Unity Personal 라이선스 인증에 필요한 시크릿
     env:
@@ -16,16 +17,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 필요하다면 PackageCache만 캐시
       - name: Cache PackageCache
         uses: actions/cache@v4
         with:
           path: Library/PackageCache
           key: pkg-${{ runner.os }}-${{ hashFiles('Packages/packages-lock.json') }}
 
-      # Temp/ build/ 잔여물 삭제
       - name: Clean before Unity Build
-        run: rm -rf Temp build
+        # 윈도우 PowerShell 환경에서 Temp, build 폴더를 삭제
+        shell: pwsh
+        run: |
+          if (Test-Path Temp) { Remove-Item -Recurse -Force Temp }
+          if (Test-Path build) { Remove-Item -Recurse -Force build }
 
       - name: Unity Build (APK)
         uses: game-ci/unity-builder@v4
