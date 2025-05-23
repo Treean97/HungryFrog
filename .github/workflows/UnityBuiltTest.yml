@@ -1,21 +1,24 @@
-name: BuildTest
+name: Build Android AAB (Host Unity)
+
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    # self-hosted 러너 지정 (윈도우 머신에 설치한 러너라면 반드시 Windows 레이블 포함)
     runs-on: [self-hosted, Windows, X64]
 
     defaults:
       run:
         shell: powershell
 
-    # Unity Personal 라이선스 인증에 필요한 시크릿
     env:
-      UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
-      UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
-      UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
+      UNITY_EMAIL:             ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD:          ${{ secrets.UNITY_PASSWORD }}
+      UNITY_SERIAL:            ${{ secrets.UNITY_SERIAL }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASS:   ${{ secrets.ANDROID_KEYSTORE_PASS }}
+      ANDROID_KEYALIAS_NAME:   ${{ secrets.ANDROID_KEYALIAS_NAME }}
+      ANDROID_KEYALIAS_PASS:   ${{ secrets.ANDROID_KEYALIAS_PASS }}
 
     steps:
       - name: Checkout repository
@@ -27,26 +30,43 @@ jobs:
           path: Library/PackageCache
           key: pkg-${{ runner.os }}-${{ hashFiles('Packages/packages-lock.json') }}
 
-      - name: Clean before Unity Build
-        # 윈도우 PowerShell 환경에서 Temp, build 폴더를 삭제
-        shell: pwsh
+      - name: Clean Temp & build folders
         run: |
-          if (Test-Path Temp) { Remove-Item -Recurse -Force Temp }
+          if (Test-Path Temp)  { Remove-Item -Recurse -Force Temp }
           if (Test-Path build) { Remove-Item -Recurse -Force build }
 
-      - name: Unity Build (APK)
-        uses: game-ci/unity-builder@v4
-        with:
-          targetPlatform: Android
-          androidExportType: androidPackage
-          androidKeystoreName:    user.keystore
-          androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
-          androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
-          androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
+      - name: Decode Android Keystore
+        run: |
+          $ks = [Convert]::FromBase64String($Env:ANDROID_KEYSTORE_BASE64)
+          [IO.File]::WriteAllBytes('user.keystore', $ks)
 
-      - name: Upload APK artifact
+      - name: Activate Unity License
+        run: |
+          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
+          & $unityPath `
+            -batchmode -nographics `
+            -username $Env:UNITY_EMAIL `
+            -password $Env:UNITY_PASSWORD `
+            -serial $Env:UNITY_SERIAL `
+            -quit
+
+      - name: Build Android AAB with Unity on Host
+        run: |
+          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
+          & $unityPath `
+            -batchmode -nographics `
+            -projectPath "${{ github.workspace }}" `
+            -executeMethod BuildScript.BuildAndroid `
+            -logFile "${{ github.workspace }}\build.log" `
+            -quit
+
+      - name: Return Unity License
+        run: |
+          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
+          & $unityPath -batchmode -returnlicense -quit
+
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-Android-apk
-          path: build/Android/*.apk
+          name: build-Android-aab
+          path: build/app.aab
