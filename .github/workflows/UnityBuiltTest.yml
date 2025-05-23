@@ -59,4 +59,12 @@ jobs:
         run: |
           $unity = "C:\Program Files\Unity\Hub\Editor\$Env:UNITY_VERSION\Editor\Unity.exe"
           & $unity -batchmode -nographics `
-              -projectPath ${{ github.workspa
+              -projectPath ${{ github.workspace }} `
+              -returnlicense `
+              -quit
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-Android-aab
+          path: build/app.aab
