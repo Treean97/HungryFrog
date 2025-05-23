@@ -7,6 +7,10 @@ jobs:
     # self-hosted 러너 지정 (윈도우 머신에 설치한 러너라면 반드시 Windows 레이블 포함)
     runs-on: [self-hosted, Windows, X64]
 
+    defaults:
+      run:
+        shell: powershell
+
     # Unity Personal 라이선스 인증에 필요한 시크릿
     env:
       UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
