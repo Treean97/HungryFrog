@@ -1,54 +1,60 @@
-name: BuildTest
-on:
-  workflow_dispatch:
+name: Build Android AAB (Host Unity)
+
+on: workflow_dispatch
 
 jobs:
   build:
-    name: BuildTest
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Windows, X64]
+    defaults:
+      run:
+        shell: powershell
 
-    # 이 그룹에 이미 실행 중인 빌드가 있으면 취소합니다
-    concurrency:
-      group: unity-build
-      cancel-in-progress: true
-
-    # Unity Personal 라이선스 인증에 필요한 시크릿
     env:
-      UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
-      UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
-      UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
+      KEYSTORE_BASE64:   ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
 
     steps:
-      # 1) 소스 체크아웃
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+      - uses: actions/checkout@v4
 
-      # 2) Library 캐시 (선택)
-      - name: Cache Library folder
-        uses: actions/cache@v4
-        with:
-          path: Library
-          key: Library-${{ runner.os }}-${{ hashFiles('Assets/**','ProjectSettings/**') }}
-          restore-keys: |
-            Library-${{ runner.os }}-
+      - name: Decode Android Keystore
+        run: |
+          [IO.File]::WriteAllBytes(
+            'user.keystore',
+            [Convert]::FromBase64String($Env:KEYSTORE_BASE64)
+          )
 
-      # 3) Unity AAB 빌드
-      - name: Build project
-        uses: game-ci/unity-builder@v4
-        with:
-          targetPlatform: Android
-          androidExportType: androidAppBundle
-          androidKeystoreName:    user.keystore
-          androidKeystoreBase64:  ${{ secrets.KEYSTORE_BASE64 }}
-          androidKeystorePass:    ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName:    ${{ secrets.KEY_ALIAS }}
-          androidKeyaliasPass:    ${{ secrets.KEY_PASSWORD }}
+      - name: Activate Unity License
+        run: |
+          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
+          & $unityPath -batchmode -nographics `
+            -username $Env:UNITY_EMAIL `
+            -password $Env:UNITY_PASSWORD `
+            -quit
 
-      # 4) 생성된 AAB 업로드
+      - name: Build Android AAB
+        run: |
+          $unityPath = 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe'
+          & $unityPath -batchmode -nographics `
+            -projectPath "${{ github.workspace }}" `
+            -executeMethod BuildScript.BuildAndroid `
+            -buildTarget Android `
+            -logFile "${{ github.workspace }}\build.log" `
+            -quit
+
+      - name: Show Unity Log
+        if: always()
+        run: |
+          type build.log
+
+      - name: Return Unity License
+        run: |
+          & 'C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Unity.exe' `
+            -batchmode -returnlicense -quit
+
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-Android
-          path: build/Android/*.aab
+          name: build-Android-aab
+          path: build/app.aab
