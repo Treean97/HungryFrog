@@ -43,10 +43,10 @@ jobs:
           targetPlatform:       Android
           androidExportType:    androidAppBundle
           androidKeystoreName:  user.keystore
-          androidKeystoreBase64:${{ secrets.KEYSTORE_BASE64 }}
-          androidKeystorePass:  ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName:  ${{ secrets.KEY_ALIAS }}
-          androidKeyaliasPass:  ${{ secrets.KEY_PASSWORD }}
+          androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
+          androidKeystorePass:   ${{ secrets.KEYSTORE_PASSWORD }}
+          androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
+          androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
