@@ -14,8 +14,8 @@ env:
 
 jobs:
   buildForAndroid:
-    runs-on: [self-hosted, linux]
     name: Build Android AAB
+    runs-on: [self-hosted, linux]
 
     steps:
       - name: Check Out
@@ -52,12 +52,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: game-aab
-          path: build/**/*.aab   # 재귀 와일드카드로 모든 .aab 포함
+          path: build/**/*.aab
 
   deployToPlayStore:
-    runs-on: ubuntu-latest
-    needs: buildForAndroid
     name: Deploy to Google Play
+    needs: buildForAndroid
+    runs-on: ubuntu-latest
 
     steps:
       - name: Download AAB Artifact
@@ -68,7 +68,7 @@ jobs:
 
       - name: List downloaded files
         run: |
-          echo ">> [DEBUG] release 디렉터리 구조:"
+          echo ">> release 디렉터리 전체 구조:"
           ls -R ./release
 
       - name: Publish to Google Play
@@ -78,4 +78,4 @@ jobs:
           packageName:        ${{ env.PACKAGE_NAME }}
           track:              ${{ env.PLAY_TRACK }}
           releaseFiles: |
-            ./release/**/*.aab  # 재귀 와일드카드로 어떤 위치든 .aab 파일 잡아냄
+            ./release/**/*.aab
