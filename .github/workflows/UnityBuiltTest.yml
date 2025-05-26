@@ -10,7 +10,8 @@ permissions:
 
 env:
   UNITY_VERSION: 6000.0.47f1
-  PACKAGE_NAME: com.YourCompany.YourGame   # → 실제 패키지명으로 변경
+  
+  PACKAGE_NAME: com.MobileGame.HungryFrog  # → 실제 패키지명으로 변경
   PLAY_TRACK: internal                     # → internal, alpha, beta, production 중 선택
 
 jobs:
