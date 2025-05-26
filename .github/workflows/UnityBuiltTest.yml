@@ -77,4 +77,4 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName:        ${{ env.PACKAGE_NAME }}
           track:              ${{ env.PLAY_TRACK }}
-          releaseFiles:       './release/**/*.aab'
+          releaseFiles:       release/**/*.aab
