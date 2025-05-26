@@ -1,38 +1,41 @@
-name: UnityBuildTest
+name: UnityBuildAndDeploy
 
 on:
   workflow_dispatch:
 
-permissions: write-all
+permissions:
+  contents: read
+  packages: write
+  id-token: write
 
 env:
   UNITY_VERSION: 6000.0.47f1
-  
+  PACKAGE_NAME: com.YourCompany.YourGame   # → 실제 패키지명으로 변경
+  PLAY_TRACK: internal                     # → internal, alpha, beta, production 중 선택
+
 jobs:
-  #Job 설정
-  buildForAndroid: 
-    name: Build Android
+  buildForAndroid:
+    name: Build Android AAB
     runs-on: [self-hosted, linux]
-          
+    outputs:
+      aab-path: ${{ steps.build.outputs.aab-path }}
+
     steps:
-      # Step1 - Check Out
       - name: Check Out
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      # Step2 - Cache Library
       - name: Cache Library
         uses: actions/cache@v4
-        with: 
+        with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
+          restore-keys: Library-
 
-      # Step3 - Unity Build
       - name: Unity Build
+        id: build
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -47,10 +50,29 @@ jobs:
           androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName: ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass: ${{ secrets.KEY_PASSWORD }}
-      
-      # Step4 - Upload Build File
-      - name: Upload Build File
+
+      - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build-Android
-          path: build
+          name: game-aab
+          path: build/*.aab
+
+  deployToPlayStore:
+    name: Deploy to Google Play
+    needs: buildForAndroid
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download AAB Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: game-aab
+          path: ./release
+
+      - name: Publish to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName:      ${{ env.PACKAGE_NAME }}
+          releaseFile:      ./release/*.aab
+          track:            ${{ env.PLAY_TRACK }}
