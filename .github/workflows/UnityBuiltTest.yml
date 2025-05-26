@@ -6,20 +6,16 @@ on:
 permissions:
   contents: read
   packages: write
-  id-token: write
 
 env:
   UNITY_VERSION: 6000.0.47f1
-  
-  PACKAGE_NAME: com.MobileGame.HungryFrog  # → 실제 패키지명으로 변경
-  PLAY_TRACK: internal                     # → internal, alpha, beta, production 중 선택
+  PACKAGE_NAME: com.MobileGame.HungryFrog
+  PLAY_TRACK: internal
 
 jobs:
   buildForAndroid:
     name: Build Android AAB
     runs-on: [self-hosted, linux]
-    outputs:
-      aab-path: ${{ steps.build.outputs.aab-path }}
 
     steps:
       - name: Check Out
@@ -56,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: game-aab
-          path: build/*.aab
+          path: build/**/*.aab
 
   deployToPlayStore:
     name: Deploy to Google Play
