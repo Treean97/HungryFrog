@@ -1,7 +1,5 @@
 name: UnityBuildAndDeploy
-
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 permissions:
   contents: read
@@ -14,34 +12,30 @@ env:
 
 jobs:
   buildForAndroid:
-    name: Build Android AAB
     runs-on: [self-hosted, linux]
 
     steps:
-      # 1) 코드 체크아웃
       - name: Check Out
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      # 2) unity-builder 액션 dist 폴더 권한 수리
       - name: Fix permissions on unity-builder dist
         run: |
-          DIST_DIR="$RUNNER_WORKSPACE/_actions/game-ci/unity-builder/v4/dist"
-          echo "🔧 Fix ownership & perms on $DIST_DIR"
-          sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
-          sudo chmod -R u+rwX "$DIST_DIR"
+          BASE="$RUNNER_WORKSPACE/_actions/game-ci/unity-builder/v4/dist"
+          echo "🔧 Fix ownership & perms under $BASE"
+          sudo find "$BASE" -exec chown $(whoami):$(whoami) {} +
+          sudo find "$BASE" -type d -exec chmod u+rwx {} +
+          sudo find "$BASE" -type f -exec chmod u+rw {} +
 
-      # 3) Library 캐시
       - name: Cache Library
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-${{ hashFiles('Assets/**','Packages/**','ProjectSettings/**') }}
           restore-keys: Library-
 
-      # 4) Unity 빌드
       - name: Unity Build
         id: build
         uses: game-ci/unity-builder@v4
@@ -50,16 +44,15 @@ jobs:
           UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
         with:
-          version:               ${{ env.UNITY_VERSION }}
-          targetPlatform:        Android
-          androidExportType:     androidAppBundle
+          version:            ${{ env.UNITY_VERSION }}
+          targetPlatform:     Android
+          androidExportType:  androidAppBundle
           androidKeystoreName:   user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass:   ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
-      # 5) AAB 업로드
       - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -67,21 +60,18 @@ jobs:
           path: build/**/*.aab
 
   deployToPlayStore:
-    name: Deploy to Google Play
     needs: buildForAndroid
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download AAB Artifact
+      - name: Download AAB
         uses: actions/download-artifact@v4
         with:
           name: game-aab
           path: ./release
 
       - name: List downloaded files
-        run: |
-          echo ">> release 디렉터리 구조:"
-          ls -R ./release
+        run: ls -R ./release
 
       - name: Publish to Google Play
         uses: r0adkll/upload-google-play@v1
