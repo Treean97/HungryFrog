@@ -16,27 +16,27 @@ jobs:
   buildForAndroid:
     name: Build Android AAB
     runs-on: [self-hosted, linux]
-    
+
     steps:
-      - name: Fix workspace permissions
+      - name: "Fix workspace permissions"
         run: |
           sudo chown -R $(whoami):$(whoami) $RUNNER_WORKSPACE
           sudo chmod -R u+rwX $RUNNER_WORKSPACE
 
-      - name: Check Out
+      - name: "Check Out"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      - name: Cache Library
+      - name: "Cache Library"
         uses: actions/cache@v4
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
 
-      - name: Unity Build
+      - name: "Unity Build"
         id: build
         uses: game-ci/unity-builder@v4
         env:
@@ -53,7 +53,7 @@ jobs:
           androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload AAB as Artifact
+      - name: "Upload AAB as Artifact"
         uses: actions/upload-artifact@v4
         with:
           name: game-aab
@@ -65,21 +65,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download AAB Artifact
+      - name: "Download AAB Artifact"
         uses: actions/download-artifact@v4
         with:
           name: game-aab
           path: ./release
 
-      - name: List downloaded files
+      - name: "List downloaded files"
         run: |
           echo ">> release 디렉터리 구조:"
           ls -R ./release
 
-      - name: Publish to Google Play
+      - name: "Publish to Google Play"
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName:        ${{ env.PACKAGE_NAME }}
-          track:              ${{ env.PLAY_TRACK }}
-          releaseFiles:       release/**/*.aab
+          packageName:                 ${{ env.PACKAGE_NAME }}
+          track:                       ${{ env.PLAY_TRACK }}
+          releaseFiles:                release/**/*.aab
