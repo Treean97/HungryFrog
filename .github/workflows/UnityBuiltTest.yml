@@ -18,21 +18,13 @@ jobs:
     runs-on: [self-hosted, linux]
 
     steps:
-      - name: "Cleanup previous dist & fix permissions"
+      - name: "Clean workspace & fix permissions"
         run: |
+          # 워크스페이스 폴더만 초기화
+          rm -rf $RUNNER_WORKSPACE/*
           # 워크스페이스 전체 권한 보장
           sudo chown -R $(whoami):$(whoami) $RUNNER_WORKSPACE
           sudo chmod -R u+rwX $RUNNER_WORKSPACE
-
-          # unity-builder 액션 dist 폴더 경로 계산
-          DIST_DIR=$(dirname $RUNNER_WORKSPACE)/_actions/game-ci/unity-builder/v4/dist
-
-          # 예전 dist 삭제 → 처음부터 빈 상태로 빌드하게 함
-          sudo rm -rf "$DIST_DIR"
-          # 재생성된 후 문제없도록 권한 보장
-          sudo mkdir -p "$DIST_DIR"
-          sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
-          sudo chmod -R u+rwX "$DIST_DIR"
 
       - name: "Check Out"
         uses: actions/checkout@v4
