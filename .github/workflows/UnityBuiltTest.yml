@@ -21,14 +21,6 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Fix permissions on unity-builder dist
-        run: |
-          BASE="$RUNNER_WORKSPACE/_actions/game-ci/unity-builder/v4/dist"
-          echo "🔧 Fix ownership & perms under $BASE"
-          sudo find "$BASE" -exec chown $(whoami):$(whoami) {} +
-          sudo find "$BASE" -type d -exec chmod u+rwx {} +
-          sudo find "$BASE" -type f -exec chmod u+rw {} +
-
       - name: Cache Library
         uses: actions/cache@v4
         with:
