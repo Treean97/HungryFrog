@@ -1,7 +1,5 @@
 name: UnityBuildAndDeploy
-
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 permissions:
   contents: read
@@ -14,7 +12,6 @@ env:
 
 jobs:
   buildForAndroid:
-    name: Build Android AAB
     runs-on: [self-hosted, linux]
 
     steps:
@@ -28,25 +25,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-${{ hashFiles('Assets/**','Packages/**','ProjectSettings/**') }}
           restore-keys: Library-
 
       - name: Unity Build
         id: build
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
         with:
-          version: ${{ env.UNITY_VERSION }}
-          targetPlatform: Android
-          androidExportType: androidAppBundle
-          androidKeystoreName: user.keystore
+          version:            ${{ env.UNITY_VERSION }}
+          targetPlatform:     Android
+          androidExportType:  androidAppBundle
+          androidKeystoreName:   user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
-          androidKeystorePass: ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName: ${{ secrets.KEY_ALIAS }}
-          androidKeyaliasPass: ${{ secrets.KEY_PASSWORD }}
+          androidKeystorePass:   ${{ secrets.KEYSTORE_PASSWORD }}
+          androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
+          androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
@@ -55,21 +52,23 @@ jobs:
           path: build/**/*.aab
 
   deployToPlayStore:
-    name: Deploy to Google Play
     needs: buildForAndroid
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download AAB Artifact
+      - name: Download AAB
         uses: actions/download-artifact@v4
         with:
           name: game-aab
           path: ./release
 
+      - name: List downloaded files
+        run: ls -R ./release
+
       - name: Publish to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName:      ${{ env.PACKAGE_NAME }}
-          releaseFile:      ./release/*.aab
-          track:            ${{ env.PLAY_TRACK }}
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName:        ${{ env.PACKAGE_NAME }}
+          track:              ${{ env.PLAY_TRACK }}
+          releaseFiles:       release/**/*.aab
