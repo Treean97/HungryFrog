@@ -18,31 +18,32 @@ jobs:
     runs-on: [self-hosted, linux]
 
     steps:
-      # 1) 체크아웃
-      - name: "Check Out"
+      # 1) 체크아웃 전에 워크스페이스 전체 권한 보정
+      - name: Fix runner workspace permissions
+        run: |
+          # unity-builder 액션이 설치된 실제 경로
+          DIST_DIR="${{ runner.workspace }}/_actions/game-ci/unity-builder/v4/dist"
+          echo "🔧 Fix perms on $DIST_DIR"
+          sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
+          sudo chmod -R u+rwX "$DIST_DIR"
+      
+      # 2) 코드 체크아웃
+      - name: Check Out
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      # 2) unity-builder 설치 폴더 권한 보정
-      - name: "Fix permissions on unity-builder dist"
-        run: |
-          DIST_DIR="${RUNNER_WORKSPACE}/_actions/game-ci/unity-builder/v4/dist"
-          echo "Fixing perms on $DIST_DIR"
-          sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
-          sudo chmod -R u+rwX "$DIST_DIR"
-
       # 3) Library 캐시
-      - name: "Cache Library"
+      - name: Cache Library
         uses: actions/cache@v4
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
 
-      # 4) Unity Build
-      - name: "Unity Build"
+      # 4) Unity 빌드
+      - name: Unity Build
         id: build
         uses: game-ci/unity-builder@v4
         env:
@@ -59,8 +60,8 @@ jobs:
           androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
-      # 5) 빌드 결과 업로드
-      - name: "Upload AAB as Artifact"
+      # 5) 결과 업로드
+      - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: game-aab
@@ -72,21 +73,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Download AAB Artifact"
+      - name: Download AAB Artifact
         uses: actions/download-artifact@v4
         with:
           name: game-aab
           path: ./release
 
-      - name: "List downloaded files"
+      - name: List downloaded files
         run: |
           echo ">> release 디렉터리 구조:"
           ls -R ./release
 
-      - name: "Publish to Google Play"
+      - name: Publish to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText:           ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName:                  ${{ env.PACKAGE_NAME }}
-          track:                        ${{ env.PLAY_TRACK }}
-          releaseFiles:                 release/**/*.aab
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName:        ${{ env.PACKAGE_NAME }}
+          track:              ${{ env.PLAY_TRACK }}
+          releaseFiles:       release/**/*.aab
