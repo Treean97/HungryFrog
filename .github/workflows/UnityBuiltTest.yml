@@ -18,12 +18,20 @@ jobs:
     runs-on: [self-hosted, linux]
 
     steps:
+      # 1) 체크아웃
       - name: "Check Out"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
+      # 2) .utmp 폴더 권한 보정 (Unity 임시 폴더 삭제 오류 방지)
+      - name: "Fix permissions on Unity temp (.utmp)"
+        run: |
+          sudo chown -R $(whoami):$(whoami) $GITHUB_WORKSPACE/.utmp
+          sudo chmod -R u+rwX         $GITHUB_WORKSPACE/.utmp
+
+      # 3) Library 캐시
       - name: "Cache Library"
         uses: actions/cache@v4
         with:
@@ -31,6 +39,7 @@ jobs:
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
 
+      # 4) Unity 빌드
       - name: "Unity Build"
         id: build
         uses: game-ci/unity-builder@v4
@@ -48,6 +57,7 @@ jobs:
           androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
+      # 5) 빌드 결과 업로드
       - name: "Upload AAB as Artifact"
         uses: actions/upload-artifact@v4
         with:
