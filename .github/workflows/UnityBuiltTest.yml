@@ -18,21 +18,19 @@ jobs:
     runs-on: [self-hosted, linux]
 
     steps:
-      # 1) 소스 체크아웃
+      # 1) 체크아웃
       - name: "Check Out"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      # 2) .utmp 임시 폴더 권한 수정
-      - name: "Fix permissions on Unity temp (.utmp)"
+      # 2) unity-builder 설치 폴더 권한 보정
+      - name: "Fix permissions on unity-builder dist"
         run: |
-          TMP_DIR="${GITHUB_WORKSPACE}/.utmp"
-          if [ -d "$TMP_DIR" ]; then
-            sudo chown -R $(whoami):$(whoami) "$TMP_DIR"
-            sudo chmod -R u+rwX "$TMP_DIR"
-          fi
+          DIST_DIR="$HOME/actions-runner-linux/_work/_actions/game-ci/unity-builder/v4/dist"
+          sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
+          sudo chmod -R u+rwX "$DIST_DIR"
 
       # 3) Library 캐시
       - name: "Cache Library"
@@ -42,7 +40,7 @@ jobs:
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
 
-      # 4) Unity 빌드
+      # 4) Unity Build
       - name: "Unity Build"
         id: build
         uses: game-ci/unity-builder@v4
@@ -87,7 +85,7 @@ jobs:
       - name: "Publish to Google Play"
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName:        ${{ env.PACKAGE_NAME }}
-          track:              ${{ env.PLAY_TRACK }}
-          releaseFiles:       release/**/*.aab
+          serviceAccountJson:           ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName:                  ${{ env.PACKAGE_NAME }}
+          track:                        ${{ env.PLAY_TRACK }}
+          releaseFiles:                 release/**/*.aab
