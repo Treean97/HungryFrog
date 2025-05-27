@@ -18,20 +18,21 @@ jobs:
     runs-on: [self-hosted, linux]
 
     steps:
-      - name: "Clean workspace & fix permissions"
-        run: |
-          # 워크스페이스 폴더만 초기화
-          rm -rf $RUNNER_WORKSPACE/*
-          # 워크스페이스 전체 권한 보장
-          sudo chown -R $(whoami):$(whoami) $RUNNER_WORKSPACE
-          sudo chmod -R u+rwX $RUNNER_WORKSPACE
-
+      # 1) 먼저 코드 체크아웃
       - name: "Check Out"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
+      # 2) unity-builder action dist 폴더만 권한 수정
+      - name: "Fix permissions on unity-builder dist"
+        run: |
+          DIST_DIR="$HOME/actions-runner-linux/_work/_actions/game-ci/unity-builder/v4/dist"
+          sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
+          sudo chmod -R u+rwX "$DIST_DIR"
+
+      # 3) 캐시
       - name: "Cache Library"
         uses: actions/cache@v4
         with:
@@ -39,6 +40,7 @@ jobs:
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
 
+      # 4) Unity 빌드
       - name: "Unity Build"
         id: build
         uses: game-ci/unity-builder@v4
@@ -56,6 +58,7 @@ jobs:
           androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
+      # 5) 결과 업로드
       - name: "Upload AAB as Artifact"
         uses: actions/upload-artifact@v4
         with:
