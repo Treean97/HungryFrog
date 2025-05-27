@@ -16,8 +16,13 @@ jobs:
   buildForAndroid:
     name: Build Android AAB
     runs-on: [self-hosted, linux]
-
+    
     steps:
+      - name: Fix workspace permissions
+        run: |
+          sudo chown -R $(whoami):$(whoami) $RUNNER_WORKSPACE
+          sudo chmod -R u+rwX $RUNNER_WORKSPACE
+
       - name: Check Out
         uses: actions/checkout@v4
         with:
