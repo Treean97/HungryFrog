@@ -28,7 +28,8 @@ jobs:
       # 2) unity-builder 설치 폴더 권한 보정
       - name: "Fix permissions on unity-builder dist"
         run: |
-          DIST_DIR="$HOME/actions-runner-linux/_work/_actions/game-ci/unity-builder/v4/dist"
+          DIST_DIR="${RUNNER_WORKSPACE}/_actions/game-ci/unity-builder/v4/dist"
+          echo "Fixing perms on $DIST_DIR"
           sudo chown -R $(whoami):$(whoami) "$DIST_DIR"
           sudo chmod -R u+rwX "$DIST_DIR"
 
