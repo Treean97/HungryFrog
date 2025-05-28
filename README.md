@@ -10,7 +10,7 @@ Unity 엔진을 기반으로 제작한 3D 모바일 캐주얼 게임입니다.
 - CI/CD : Git Action(Self-Hosted)
 - 백엔드 : Google Play Game Service, Playfab
 
-## 주요 기능 :
+## 주요 기능
 **Google Play Game Service 연동**
   - 자동 로그인 : 게임 실행 시 Google 계정으로 자동 로그인 처리
   - 업적 & 도전 과제 : GPGS 업적 시스템과 게임 내 연동
