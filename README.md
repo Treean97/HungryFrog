@@ -22,8 +22,7 @@ Unity 엔진을 기반으로 제작한 3D 모바일 캐주얼 게임입니다.
 
 **Playfab 데이터 관리**
   - 리더보드 : PlayFab Leaderboard API를 활용한 점수 집계 및 표시
-  - 사용자 식별 : GPGS 로그인 실패 시 Custom ID 부여 (중복 방지 태그 구현)
-  - 데이터 저장 : 유저 Custom ID JSon 파일로 로컬 저장, 불러오기
+  - 사용자 식별 : GPGS 로그인 실패 시 Custom ID 부여 (중복 방지용 태그 구현)
 
 **최적화 기법**
   - ScriptableObject : 자주 생성 및 파괴되는 오브젝트 데이터를 ScriptableObject로 관리하여 메모리 절약 및 수정, 추가 편의성 향상
