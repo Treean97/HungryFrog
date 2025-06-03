@@ -18,11 +18,14 @@ public class DataSaveLoad : MonoBehaviour
     private string _SavePath;               // JSON 파일 저장 경로
 
 
-    private void Start()
+    private void Awake()
     {
         // persistentDataPath 하위에 JSON 파일 경로를 설정
         _SavePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
+    }
 
+    private void Start()
+    {
         LoadData();        // 시작 시 디스크에서 불러오기
         LoadSoundVolume(); // 볼륨 설정 적용
 
