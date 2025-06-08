@@ -6,10 +6,13 @@ using PlayFab.ClientModels;
 
 public class PlayFabLeaderboardManager : MonoBehaviour
 {
+    // 1) ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤ ê´€ë¦¬
     public static PlayFabLeaderboardManager _Inst;
-    private bool _isLoggedIn = false;            // ·Î±×ÀÎ »óÅÂ ÇÃ·¡±×
 
-    // Ç¥½Ã ID °ü¸® ÇÊµå ¹× ÇÁ·ÎÆÛÆ¼
+    // ë¡œê·¸ì¸ ìƒíƒœ í”Œë˜ê·¸
+    private bool _isLoggedIn = false;
+
+    // 2) í‘œì‹œí•  ID ê´€ë¦¬ í”„ë¡œí¼í‹°
     private string _DisplayId;
     public string DisplayId
     {
@@ -17,6 +20,7 @@ public class PlayFabLeaderboardManager : MonoBehaviour
         set
         {
             _DisplayId = value;
+            // ì´ë¯¸ ë¡œê·¸ì¸ëœ ìƒíƒœë¼ë©´ PlayFabì— DisplayName ê°±ì‹  í˜¸ì¶œ
             if (_isLoggedIn)
                 UpdateDisplayName(_DisplayId);
         }
@@ -35,56 +39,57 @@ public class PlayFabLeaderboardManager : MonoBehaviour
         }
     }
 
-    // PlayFab¿¡ Custom ID(¿©±â¼­´Â GoogleId)·Î ·Î±×ÀÎ
+    // 3) PlayFab Custom ID ë¡œê·¸ì¸
     public void LoginWithCustomId(string customId)
     {
         var request = new LoginWithCustomIDRequest
         {
-            CustomId = customId,
-            CreateAccount = true
+            CustomId      = customId,   // ë¡œê·¸ì¸ì— ì‚¬ìš©í•  Custom ID
+            CreateAccount = true        // ê³„ì •ì´ ì—†ìœ¼ë©´ ìë™ ìƒì„±
         };
 
         PlayFabClientAPI.LoginWithCustomID(request,
             result =>
             {
-                Debug.Log($"PlayFab ·Î±×ÀÎ ¼º°ø: {customId}");
+                Debug.Log($"PlayFab ë¡œê·¸ì¸ ì„±ê³µ: {customId}");
                 _isLoggedIn = true;
 
-                // ·Î±×ÀÎ ÈÄ, DisplayId°¡ ÀÌ¹Ì ¼³Á¤µÇ¾î ÀÖÀ¸¸é PlayFab ÇÁ·ÎÇÊ¿¡µµ µ¿±âÈ­
+                // ë¡œê·¸ì¸ ì´í›„ DisplayIdê°€ ë³€ê²½ë˜ì–´ì•¼ í•  ê²½ìš° ê°±ì‹ 
                 if (!string.IsNullOrEmpty(_DisplayId) && _DisplayId != customId)
                     UpdateDisplayName(_DisplayId);
             },
             error =>
             {
-                Debug.LogError($"PlayFab ·Î±×ÀÎ ½ÇÆĞ: {error.GenerateErrorReport()}");
+                Debug.LogError($"PlayFab ë¡œê·¸ì¸ ì‹¤íŒ¨: {error.GenerateErrorReport()}");
             });
     }
 
-    // PlayFab ÇÁ·ÎÇÊÀÇ DisplayName ¾÷µ¥ÀÌÆ®
+    // 4) PlayFab ì‚¬ìš©ì íƒ€ì´í‹€ DisplayName ì—…ë°ì´íŠ¸
     private void UpdateDisplayName(string newName)
     {
         var nameReq = new UpdateUserTitleDisplayNameRequest
         {
-            DisplayName = newName
+            DisplayName = newName    // ê°±ì‹ í•  DisplayName
         };
 
         PlayFabClientAPI.UpdateUserTitleDisplayName(nameReq,
             res =>
             {
-                Debug.Log($"DisplayName ¼³Á¤ ¼º°ø: {res.DisplayName}");
+                Debug.Log($"DisplayName ê°±ì‹  ì„±ê³µ: {res.DisplayName}");
             },
             err =>
             {
                 if (err.Error == PlayFabErrorCode.NameNotAvailable)
-                    Debug.LogWarning($"ÀÌ¹Ì »ç¿ë ÁßÀÎ DisplayName: {newName}");
+                    Debug.LogWarning($"ì´ë¯¸ ì‚¬ìš© ì¤‘ì¸ DisplayName: {newName}");
                 else
-                    Debug.LogWarning($"DisplayName ¼³Á¤ ½ÇÆĞ: {err.GenerateErrorReport()}");
+                    Debug.LogWarning($"DisplayName ê°±ì‹  ì‹¤íŒ¨: {err.GenerateErrorReport()}");
             });
     }
 
-    // Á¡¼ö ÀúÀå
+    // 5) ì ìˆ˜ ì €ì¥ ìš”ì²­
     public void SaveScore(int tScore, Action onSuccess = null, Action<string> onError = null)
     {
+        // ë¡œê·¸ì¸ í™•ì¸
         if (!_isLoggedIn)
         {
             onError?.Invoke("Not logged in");
@@ -97,8 +102,8 @@ public class PlayFabLeaderboardManager : MonoBehaviour
             {
                 new StatisticUpdate
                 {
-                    StatisticName = "HighScore",
-                    Value         = tScore
+                    StatisticName = "HighScore",  // ì €ì¥í•  í†µê³„ ì´ë¦„
+                    Value         = tScore        // ì €ì¥í•  ì ìˆ˜ ê°’
                 }
             }
         };
@@ -106,19 +111,20 @@ public class PlayFabLeaderboardManager : MonoBehaviour
         PlayFabClientAPI.UpdatePlayerStatistics(statReq,
             res =>
             {
-                Debug.Log($"Á¡¼ö ÀúÀå ¼º°ø: {tScore}");
+                Debug.Log($"ì ìˆ˜ ì €ì¥ ì„±ê³µ: {tScore}");
                 onSuccess?.Invoke();
             },
             err =>
             {
-                Debug.LogError($"Á¡¼ö ÀúÀå ½ÇÆĞ: {err.GenerateErrorReport()}");
+                Debug.LogError($"ì ìˆ˜ ì €ì¥ ì‹¤íŒ¨: {err.GenerateErrorReport()}");
                 onError?.Invoke(err.GenerateErrorReport());
             });
     }
 
-    // ¸®´õº¸µå ·Îµå
+    // 6) ë¦¬ë”ë³´ë“œ ë°ì´í„° ë¶ˆëŸ¬ì˜¤ê¸°
     public void LoadLeaderboard(Action<List<PlayerLeaderboardEntry>> onSuccess, Action<string> onError = null)
     {
+        // ë¡œê·¸ì¸ í™•ì¸
         if (!_isLoggedIn)
         {
             onError?.Invoke("Not logged in");
@@ -127,19 +133,20 @@ public class PlayFabLeaderboardManager : MonoBehaviour
 
         var request = new GetLeaderboardRequest
         {
-            StatisticName = "HighScore",
-            StartPosition = 0,
-            MaxResultsCount = 30
+            StatisticName    = "HighScore",  // ì¡°íšŒí•  í†µê³„ ì´ë¦„
+            StartPosition    = 0,            // ì‹œì‘ ìˆœìœ„
+            MaxResultsCount  = 30            // ìµœëŒ€ ê²°ê³¼ ê°œìˆ˜
         };
 
         PlayFabClientAPI.GetLeaderboard(request,
             result =>
             {
+                // ì½œë°±ìœ¼ë¡œ ë¦¬ë”ë³´ë“œ ë¦¬ìŠ¤íŠ¸ ë°˜í™˜
                 onSuccess?.Invoke(result.Leaderboard);
             },
             error =>
             {
-                Debug.LogError($"¸®´õº¸µå ·Îµù ½ÇÆĞ: {error.GenerateErrorReport()}");
+                Debug.LogError($"ë¦¬ë”ë³´ë“œ ë¶ˆëŸ¬ì˜¤ê¸° ì‹¤íŒ¨: {error.GenerateErrorReport()}");
                 onError?.Invoke(error.GenerateErrorReport());
             });
     }

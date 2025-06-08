@@ -17,7 +17,7 @@ public class GPGSManager : MonoBehaviour
         }
     }
 
-    // ¾÷Àû ÇØÁ¦
+    // ì—…ì  í•´ê¸ˆ
     public void UnlockAchievement(string achievementId)
     {
         if (PlayGamesPlatform.Instance.localUser.authenticated)

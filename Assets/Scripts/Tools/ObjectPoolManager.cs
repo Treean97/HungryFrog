@@ -4,26 +4,34 @@ using UnityEngine;
 
 public class ObjectPoolManager : MonoBehaviour
 {
+    // 1) ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤
     public static ObjectPoolManager _Inst;
 
+    // 2) í’€ ì •ë³´ êµ¬ì¡°ì²´
     [System.Serializable]
     public class Pool
     {
-        public string Name;
-        public GameObject Prefab;
-        public int Size;
-        public Transform Parent;
+        public string Name;       // í’€ ì´ë¦„
+        public GameObject Prefab; // ì¸ìŠ¤í„´ìŠ¤í™”í•  í”„ë¦¬íŒ¹
+        public int Size;          // ì´ˆê¸° ìƒì„± ê°œìˆ˜
+        public Transform Parent;  // ìƒì„±ëœ ì˜¤ë¸Œì íŠ¸ì˜ ë¶€ëª¨
     }
 
-    public List<Pool> _Pools; // Ç® ¸ñ·Ï
-    public Dictionary<string, Queue<GameObject>> _PoolDictionary; // Ç® µñ¼Å³Ê¸®
+    // 3) í’€ ë¦¬ìŠ¤íŠ¸
+    public List<Pool> _Pools;
 
-    void Awake()
+    // 4) í’€ ë”•ì…”ë„ˆë¦¬ (ì´ë¦„ â†’ ì˜¤ë¸Œì íŠ¸ í)
+    public Dictionary<string, Queue<GameObject>> _PoolDictionary;
+
+    private void Awake()
     {
+        // 5) ì‹±ê¸€í†¤ ì´ˆê¸°í™”
         _Inst = this;
 
+        // 6) ë”•ì…”ë„ˆë¦¬ ìƒì„±
         _PoolDictionary = new Dictionary<string, Queue<GameObject>>();
 
+        // 7) ê° í’€ì— ëŒ€í•´ ì‚¬ì „ ìƒì„±
         foreach (Pool tPool in _Pools)
         {
             Queue<GameObject> tObjectPool = new Queue<GameObject>();
@@ -39,49 +47,52 @@ public class ObjectPoolManager : MonoBehaviour
         }
     }
 
+    // 8) í’€ì—ì„œ ì˜¤ë¸Œì íŠ¸ ê°€ì ¸ì˜¤ê¸°
     public GameObject GetObject(string tName)
     {
+        // 9) í’€ ë¶€ì¬ ì‹œ null ë°˜í™˜
         if (!_PoolDictionary.ContainsKey(tName))
-        {
-            return null; // ¿äÃ»ÇÑ Ç®ÀÌ ¾ø´Â °æ¿ì null ¹İÈ¯
-        }
+            return null;
 
-        // »ç¿ë °¡´ÉÇÑ ¿ÀºêÁ§Æ®¸¦ Ã£À» ¶§±îÁö ¹İº¹
-        for (int i = 0; i < _PoolDictionary[tName].Count; i++)
-        {
-            GameObject tObjectToSpawn = _PoolDictionary[tName].Dequeue();
+        var tQueue = _PoolDictionary[tName];
+        int tCount = tQueue.Count;
 
-            // ¿ÀºêÁ§Æ®°¡ ºñÈ°¼ºÈ­ »óÅÂÀÌ¸é »ç¿ë
-            if (!tObjectToSpawn.activeInHierarchy)
+        // 10) ë¹„í™œì„± ê°ì²´ íƒìƒ‰
+        for (int i = 0; i < tCount; i++)
+        {
+            GameObject tObj = tQueue.Dequeue();
+
+            if (!tObj.activeInHierarchy)
             {
-                tObjectToSpawn.SetActive(true);
-                return tObjectToSpawn;
+                // 11) ë¹„í™œì„± ì‹œ í™œì„±í™” í›„ ë°˜í™˜
+                tObj.SetActive(true);
+                return tObj;
             }
 
-            // È°¼ºÈ­ »óÅÂÀÌ¸é ´Ù½Ã Å¥¿¡ ³Ö±â
-            _PoolDictionary[tName].Enqueue(tObjectToSpawn);
+            // 12) í™œì„±ëœ ê°ì²´ëŠ” ë‹¤ì‹œ íì— ë“±ë¡
+            tQueue.Enqueue(tObj);
         }
 
-        // Ç®ÀÌ ºñ¾îÀÖ°Å³ª ¸ğµÎ È°¼ºÈ­µÈ °æ¿ì »õ·Î¿î ¿ÀºêÁ§Æ® »ı¼º
-        GameObject tNewObject =
-            Instantiate(_Pools.Find(p => p.Name == tName).Prefab,
-            _Pools.Find(p => p.Name == tName).Parent);
-        tNewObject.SetActive(false);
-        _PoolDictionary[tName].Enqueue(tNewObject);
+        // 13) ëª¨ë‘ ì‚¬ìš© ì¤‘ì´ë©´ ìƒˆ ê°ì²´ ìƒì„±
+        Pool tInfo = _Pools.Find(p => p.Name == tName);
+        GameObject tNewObj = Instantiate(tInfo.Prefab, tInfo.Parent);
+        tNewObj.SetActive(false);
+        tQueue.Enqueue(tNewObj);
 
-        // »õ·Î »ı¼ºÇÑ ¿ÀºêÁ§Æ®¸¦ ¹İÈ¯
-        GameObject newObjectToSpawn = _PoolDictionary[tName].Dequeue();
-        newObjectToSpawn.SetActive(true);
-        return newObjectToSpawn;
+        // 14) ìƒˆë¡œ ìƒì„±í•œ ê°ì²´ í™œì„±í™” í›„ ë°˜í™˜
+        GameObject tSpawn = tQueue.Dequeue();
+        tSpawn.SetActive(true);
+        return tSpawn;
     }
 
+    // 15) ì˜¤ë¸Œì íŠ¸ ë°˜í™˜
     public void ReturnObject(GameObject tObject)
     {
         tObject.SetActive(false);
 
+        // 16) í•´ë‹¹ í’€ ì°¾ì•„ì„œ íì— ì¬ë“±ë¡
         foreach (var tPool in _Pools)
         {
-            // ÇÁ¸®ÆÕ°ú ½ÇÁ¦ ¿ÀºêÁ§Æ®ÀÇ ÇÁ¸®ÆÕÀ» ºñ±³
             if (tPool.Prefab.name == tObject.name.Replace("(Clone)", "").Trim())
             {
                 _PoolDictionary[tPool.Name].Enqueue(tObject);

@@ -4,40 +4,18 @@ using UnityEngine;
 
 public class AdditionalForceManager : MonoBehaviour
 {
-    [SerializeField]
-    AdditionalForceUI _AdditionalForceUI;   // UI 
+    [SerializeField] AdditionalForceUI _AdditionalForceUI;   // ì¶”ê°€ í˜ UI ì°¸ì¡°
+    [SerializeField] float _MaxRandomForceRange;             // ìµœëŒ€ ëœë¤ í˜ ë²”ìœ„
 
-    [SerializeField]
-    float _MaxRandomForceRange;   // ·£´ı °ª ¹üÀ§  
+    float _AdditionalForce = 0;      // ê³„ì‚°ëœ í˜ í¬ê¸°
+    float _MinAdditionalForce = 0;   // ìµœì†Œ í˜ í¬ê¸°
 
-    float _AdditionalForce = 0;
-    float _MinAdditionalForce = 0;
+    Vector3 _AdditionalForceVector = Vector3.zero;  
+    public Vector3 GetAdditionalForceVector => _AdditionalForceVector;  // ìµœì¢… í˜ ë²¡í„°
 
+    public float GetFixedAdditionalForce => _AdditionalForce;           // ê³„ì‚°ëœ í˜ í¬ê¸° ë°˜í™˜
 
-    Vector3 _AdditonalForceVector = Vector3.zero;
-    public Vector3 GetAdditionalForceVector
-    {
-        get { return _AdditonalForceVector; }
-    }
-
-
-    public float GetFixedAdditionalForce
-    {
-        get { return _AdditionalForce; }
-    }
-
-    // ¹æÇâ
-    // 0 : Vector3 0,0,0
-    // 1 : Vector3 0,1,0
-    // 2 : Vector3 1,1,0
-    // 3 : Vector3 1,0,0
-    // 4 : Vector3 1,-1,0
-    // 5 : Vector3 0,-1,0
-    // 6 : Vector3 -1,-1,0
-    // 7 : Vector3 -1,0,0
-    // 8 : Vector3 -1,1,0
-
-
+    // í˜ ë°©í–¥ ë°°ì—´ (ì¸ë±ìŠ¤ë³„ ë°©í–¥)
     Vector3[] _ForceDirection = new Vector3[]
     {
         new Vector3(0,0,0),
@@ -51,47 +29,28 @@ public class AdditionalForceManager : MonoBehaviour
         new Vector3(-1,1,0)
     };
 
+    void Start() { }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    void Update() { }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // 1) ì¶”ê°€ í˜ ì„¤ì • í˜¸ì¶œ
     public void SetAdditionalForce()
     {
-        // ·£´ı ¹æÇâ ÃßÃâ
-        int tRandomInt = Random.Range(0, _ForceDirection.Length);
+        int tRandomInt = Random.Range(0, _ForceDirection.Length);           // ë°©í–¥ ì¸ë±ìŠ¤ ê²°ì •
+        float tRandomFloat = 0;
 
-        // Èû Å©±â
-        float tRandomfloat = 0;
-
-        // ¹æÇâÀÌ 0 ÀÌ¸é ¿ÜºÎÈû X
         if (tRandomInt != 0)
         {
-            // ·£´ı Èû Å©±â ÃßÃâ
-            tRandomfloat = Random.Range(_MinAdditionalForce, _MaxRandomForceRange);
-            // ¼Ò¼ıÁ¡ 1ÀÚ¸®±îÁö ³²±â°í ¹ö¸²
-            _AdditionalForce = Mathf.Floor(tRandomfloat * 10f) / 10f;
-        }     
+            tRandomFloat = Random.Range(_MinAdditionalForce, _MaxRandomForceRange);  
+            _AdditionalForce = Mathf.Floor(tRandomFloat * 10f) / 10f;        // ì†Œìˆ˜ì  ì²«ì§¸ìë¦¬ ì ˆì‚¬
+        }
         else
         {
-            _AdditionalForce = tRandomfloat;
+            _AdditionalForce = 0;                                           // ì¸ë±ìŠ¤ 0ì¼ ë• í˜ 0
         }
 
-        // ¹æÇâ * Å©±â º¤ÅÍ·Î º¯È¯
-        _AdditonalForceVector = _AdditionalForce * _ForceDirection[tRandomInt];
-
-        // UI Text Ç¥½Ã
-        _AdditionalForceUI.SetAdditionalForceText(_AdditionalForce);
-
-        // UI Image Ç¥½Ã ( ¹æÇâ Index¸¦ ¸Å°³º¯¼ö·Î ³Ñ°Ü¼­ )
-        _AdditionalForceUI.SetAdditionalForceImage(tRandomInt);
+        _AdditionalForceVector = _AdditionalForce * _ForceDirection[tRandomInt];  
+        _AdditionalForceUI.SetAdditionalForceText(_AdditionalForce);        // UI í…ìŠ¤íŠ¸ ê°±ì‹ 
+        _AdditionalForceUI.SetAdditionalForceImage(tRandomInt);             // UI ì´ë¯¸ì§€ ê°±ì‹ 
     }
 }

@@ -3,36 +3,32 @@ using UnityEngine;
 
 public class MainSceneNPCController : MonoBehaviour
 {
-    [SerializeField]
-    Animator _Animator;
+    [SerializeField] Animator _Animator;  // NPC ì• ë‹ˆë©”ì´í„° ì»´í¬ë„ŒíŠ¸
 
-    // ¾Ö´Ï¸ŞÀÌ¼Ç º¯°æÀ» À§ÇÑ ·£´ı °ª ÃÖ´ë, ÃÖ¼Ò Á¦ÇÑ
-    float _MaxDelaySwitchAni = 10;
-    float _MinDelaySwitchAni = 5;
-        
-    // ¾Ö´Ï¸ŞÀÌ¼Ç º¯°æÀ» À§ÇÑ µô·¹ÀÌ
-    float _MaxRandomDelay;    
-    float _CurRandomDelay;
+    float _MaxDelaySwitchAni = 10f;      // ì• ë‹ˆë©”ì´ì…˜ ì „í™˜ ìµœëŒ€ ì§€ì—° ì‹œê°„
+    float _MinDelaySwitchAni = 5f;       // ì• ë‹ˆë©”ì´ì…˜ ì „í™˜ ìµœì†Œ ì§€ì—° ì‹œê°„
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    float _MaxRandomDelay;               // í˜„ì¬ ëœë¤ ì§€ì—° ì‹œê°„
+    float _CurRandomDelay;               // ëˆ„ì ëœ ê²½ê³¼ ì‹œê°„
+
     void Start()
     {
+        // ì‹œì‘í•  ë•Œ ì§€ì—° ì‹œê°„ì„ ëœë¤ìœ¼ë¡œ ì„¤ì •
         _MaxRandomDelay = Random.Range(_MinDelaySwitchAni, _MaxDelaySwitchAni);
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(_CurRandomDelay >= _MaxRandomDelay)
+        // ëˆ„ì ëœ ì‹œê°„ì´ ì„¤ì •ëœ ì§€ì—° ì‹œê°„ì„ ë„˜ìœ¼ë©´ ì• ë‹ˆë©”ì´ì…˜ ì „í™˜
+        if (_CurRandomDelay >= _MaxRandomDelay)
         {
             SwitchAni();
         }
 
-        // idleÀÏ ¶§¸¸ Ä«¿îÆ® Áõ°¡
-        // 0Àº Base Layer¸¦ ÀÇ¹ÌÇÔ
+        // Base ë ˆì´ì–´ì˜ í˜„ì¬ ì• ë‹ˆë©”ì´í„° ìƒíƒœ ì •ë³´ í™•ì¸
         AnimatorStateInfo tStateInfo = _Animator.GetCurrentAnimatorStateInfo(0);
 
+        // Idle ìƒíƒœì¼ ë•Œë§Œ ì‹œê°„ ëˆ„ì 
         if (tStateInfo.IsName("Idle"))
         {
             _CurRandomDelay += Time.deltaTime;
@@ -41,23 +37,19 @@ public class MainSceneNPCController : MonoBehaviour
 
     void SwitchAni()
     {
-        // ·£´ı°ª ´Ù½Ã »ı¼º
+        // ë‹¤ìŒ ì „í™˜ì„ ìœ„í•œ ìƒˆë¡œìš´ ëœë¤ ì§€ì—° ì‹œê°„ ì„¤ì •
         _MaxRandomDelay = Random.Range(_MinDelaySwitchAni, _MaxDelaySwitchAni);
 
-        // ÇöÀç °ª ÃÊ±âÈ­
-        _CurRandomDelay = 0;
+        // ê²½ê³¼ ì‹œê°„ ì´ˆê¸°í™”
+        _CurRandomDelay = 0f;
 
-        // 0,1 ¹ø ´ëÈ­ ¾Ö´Ï¸ŞÀÌ¼Ç Áß ·£´ı ½ÇÇà
+        // Talk_0 ë˜ëŠ” Talk_1 íŠ¸ë¦¬ê±° ì„ íƒ
         int tRandom = Random.Range(0, 2);
-
         StringBuilder tSB = new StringBuilder();
         tSB.Append("Talk_");
         tSB.Append(tRandom.ToString());
 
+        // ì• ë‹ˆë©”ì´í„°ì— íŠ¸ë¦¬ê±° ì „ë‹¬
         _Animator.SetTrigger(tSB.ToString());
-
     }
-
-
-
 }

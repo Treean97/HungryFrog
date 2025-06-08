@@ -3,41 +3,49 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+// 1) ì—…ì  ì •ë³´ êµ¬ì¡°ì²´
 [Serializable]
 public struct AchievementInfo
 {
-    public int Threshold;      // Á¡¼ö ÀÓ°èÄ¡
-    public string AchievementId;  // Play Console ¿¡ µî·ÏµÈ ¾÷Àû ID
-    [NonSerialized] public bool Unlocked; // ·ÎÄÃ ¾ğ¶ô »óÅÂ
+    public int Threshold;          // ë‹¬ì„± ê¸°ì¤€ ì ìˆ˜
+    public string AchievementId;   // Play Consoleì— ë“±ë¡ëœ ì—…ì  ID
+    [NonSerialized] public bool Unlocked; // ì—…ì  í•´ì œ ì—¬ë¶€ (ëŸ°íƒ€ì„ ì „ìš©)
 }
 
 public class GameSceneScoreManager : MonoBehaviour
 {
+    // 2) ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤
     public static GameSceneScoreManager _Inst;
 
-    [SerializeField] private int _ShootScoreMultiple;
-    [SerializeField] private int _CombineScoreMultiple;
+    // 3) ì ìˆ˜ ê°€ì¤‘ì¹˜ ì„¤ì •
+    [SerializeField] private int _ShootScoreMultiple;    // ë°œì‚¬ ì ìˆ˜ ë°°ìˆ˜
+    [SerializeField] private int _CombineScoreMultiple;  // í•©ì„± ì ìˆ˜ ë°°ìˆ˜
+
+    // 4) ì ìˆ˜ í‘œì‹œìš© UI í…ìŠ¤íŠ¸ë“¤
     [SerializeField] private TMP_Text[] _GameSceneScoreTextUI;
 
-    // ÀÓ°èÄ¡¡¤¾÷ÀûID ½Ö ¸®½ºÆ® (ÀÎ½ºÆåÅÍ¿¡¼­ ¼³Á¤ °¡´É)
+    // 5) ì—…ì  ì •ë³´ ë°°ì—´ (ì ìˆ˜ ê¸°ì¤€ë³„ ì—…ì )
     [SerializeField] private AchievementInfo[] _Achievements;
 
+    // 6) í˜„ì¬ ì ìˆ˜
     private int _Score;
     public int GetScore => _Score;
 
     private void Awake()
     {
+        // 7) ì‹±ê¸€í†¤ ì´ˆê¸°í™”
         if (_Inst == null) _Inst = this;
         else Destroy(gameObject);
     }
 
     private void Start()
     {
+        // 8) ì‹œì‘ ì‹œ ì ìˆ˜ ì´ˆê¸°í™” ë° ì—…ì  ë°°ì—´ ì •ë ¬
         _Score = 0;
-        // ¾÷Àû ¹è¿­À» Á¡¼ö ±âÁØ ¿À¸§Â÷¼øÀ¸·Î Á¤·Ä (¾ÈÁ¤Àû Ã³¸® À§ÇØ)
         Array.Sort(_Achievements, (a, b) => a.Threshold.CompareTo(b.Threshold));
     }
 
+    // 9) íˆ¬ì‚¬ì²´ ë°œì‚¬ë¡œ ì ìˆ˜ ì¶”ê°€
     public void AddScoreByShoot(int tObjectID)
     {
         _Score += (tObjectID + 1) * _ShootScoreMultiple;
@@ -45,6 +53,7 @@ public class GameSceneScoreManager : MonoBehaviour
         CheckAchievements();
     }
 
+    // 10) ì•„ì´í…œ í•©ì„±ìœ¼ë¡œ ì ìˆ˜ ì¶”ê°€
     public void AddScoreByCombine(int tObjectID)
     {
         _Score += (tObjectID + 1) * _CombineScoreMultiple;
@@ -52,22 +61,22 @@ public class GameSceneScoreManager : MonoBehaviour
         CheckAchievements();
     }
 
+    // 11) UI í…ìŠ¤íŠ¸ì— ì ìˆ˜ ê°±ì‹ 
     private void UpdateScoreUI()
     {
         foreach (var txt in _GameSceneScoreTextUI)
             txt.text = _Score.ToString();
     }
 
+    // 12) ì—…ì  ë‹¬ì„± ì²´í¬ ë° í•´ì œ
     private void CheckAchievements()
     {
         for (int i = 0; i < _Achievements.Length; i++)
         {
             ref var info = ref _Achievements[i];
-
-            // ¾ÆÁ÷ ¾ğ¶ôµÇÁö ¾Ê¾Ò°í, Á¡¼ö°¡ ÀÓ°èÄ¡ ÀÌ»óÀÌ¸é ¾ğ¶ô
             if (!info.Unlocked && _Score >= info.Threshold)
             {
-                info.Unlocked = true;  // Áßº¹ ¹æÁö
+                info.Unlocked = true;  
                 GPGSManager._Inst.UnlockAchievement(info.AchievementId);
             }
         }

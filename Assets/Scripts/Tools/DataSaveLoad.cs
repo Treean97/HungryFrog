@@ -4,63 +4,70 @@ using UnityEngine.Audio;
 
 public class DataSaveLoad : MonoBehaviour
 {
+    // 1) í”Œë ˆì´ì–´ ë°ì´í„° êµ¬ì¡°ì²´ (JSON ì§ë ¬í™”ìš©)
     [System.Serializable]
     public class PlayerData
     {
-        public float MasterValue = 1f;      // ¸¶½ºÅÍ º¼·ı
-        public float BGMValue = 1f;      // BGM º¼·ı
-        public float SFXValue = 1f;      // SFX º¼·ı
-        public string DisplayId;            // ÇÃ·¹ÀÌ¾î Ç¥½Ã ID
+        // ë§ˆìŠ¤í„° ë³¼ë¥¨ ê°’ (0~1)
+        public float MasterValue = 1f;   
+
+        // BGM ë³¼ë¥¨ ê°’ (0~1)
+        public float BGMValue = 1f;      
+
+        // SFX ë³¼ë¥¨ ê°’ (0~1)
+        public float SFXValue = 1f;      
+
+        // í”Œë ˆì´ì–´ í‘œì‹œ ID
+        public string DisplayId;         
     }
 
-    public PlayerData _Data;                // ÇöÀç ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ ÀÎ½ºÅÏ½º
-    [SerializeField] private AudioMixer _AudioMixer;
-    private string _SavePath;               // JSON ÆÄÀÏ ÀúÀå °æ·Î
-
+    public PlayerData _Data;             // í˜„ì¬ ë¡œë“œëœ í”Œë ˆì´ì–´ ë°ì´í„°
+    [SerializeField] private AudioMixer _AudioMixer;  
+    private string _SavePath;            // JSON íŒŒì¼ ì €ì¥ ê²½ë¡œ
 
     private void Awake()
     {
-        // persistentDataPath ÇÏÀ§¿¡ JSON ÆÄÀÏ °æ·Î¸¦ ¼³Á¤
+        // 2) ì €ì¥ ê²½ë¡œ ì´ˆê¸°í™”
         _SavePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
     }
 
     private void Start()
     {
-        LoadData();        // ½ÃÀÛ ½Ã µğ½ºÅ©¿¡¼­ ºÒ·¯¿À±â
-        LoadSoundVolume(); // º¼·ı ¼³Á¤ Àû¿ë
-
+        // 3) ë°ì´í„° ë¡œë“œ ë° ì˜¤ë””ì˜¤ ë³¼ë¥¨ ì„¤ì •
+        LoadData();
+        LoadSoundVolume();
     }
 
+    // 4) ë°ì´í„°ë¥¼ JSONìœ¼ë¡œ ì €ì¥
     public void SaveData()
     {
-        // PlayerData °´Ã¼¸¦ JSONÀ¸·Î Á÷·ÄÈ­ÇÏ¿© ÆÄÀÏ¿¡ ÀúÀå
         string tJson = JsonUtility.ToJson(_Data, false);
         File.WriteAllText(_SavePath, tJson);
     }
 
+    // 5) JSON íŒŒì¼ì—ì„œ ë°ì´í„° ë¡œë“œ
     public void LoadData()
     {
-        // ÆÄÀÏÀÌ Á¸ÀçÇÏ¸é JSON ÀĞ¾î¼­ ¿ªÁ÷·ÄÈ­
         if (File.Exists(_SavePath))
         {
             string tJson = File.ReadAllText(_SavePath);
             _Data = JsonUtility.FromJson<PlayerData>(tJson);
         }
 
-        // ÆÄÀÏÀÌ ¾ø°Å³ª ¿ªÁ÷·ÄÈ­ ½ÇÆĞ ½Ã »õ °´Ã¼ »ı¼º
+        // íŒŒì¼ì´ ì—†ê±°ë‚˜ íŒŒì‹± ì‹¤íŒ¨ ì‹œ ê¸°ë³¸ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
         if (_Data == null)
             _Data = new PlayerData();
 
-        // DisplayId°¡ ºñ¾î ÀÖÀ¸¸é µğ¹ÙÀÌ½º °íÀ¯ ID·Î ÃÊ±âÈ­
+        // DisplayIdê°€ ë¹„ì–´ ìˆìœ¼ë©´ ê¸°ê¸° ê³ ìœ  IDë¡œ ì´ˆê¸°í™”
         if (string.IsNullOrEmpty(_Data.DisplayId))
             _Data.DisplayId = SystemInfo.deviceUniqueIdentifier;
     }
 
+    // 6) AudioMixerì— ë³¼ë¥¨ ê°’ ì ìš©
     public void LoadSoundVolume()
     {
-        // AudioMixer¿¡ JSON¿¡¼­ ºÒ·¯¿Â º¼·ı ¼³Á¤°ª Àû¿ë
         _AudioMixer.SetFloat("Master", Mathf.Log10(_Data.MasterValue) * 20f);
-        _AudioMixer.SetFloat("BGM", Mathf.Log10(_Data.BGMValue) * 20f);
-        _AudioMixer.SetFloat("SFX", Mathf.Log10(_Data.SFXValue) * 20f);
+        _AudioMixer.SetFloat("BGM",    Mathf.Log10(_Data.BGMValue)    * 20f);
+        _AudioMixer.SetFloat("SFX",    Mathf.Log10(_Data.SFXValue)    * 20f);
     }
 }

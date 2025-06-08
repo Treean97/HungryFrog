@@ -26,7 +26,6 @@ public class MainSceneLeaderBoardUIObject : MainSceneUIObjectBase
 
     IEnumerator RespwanCo()
     {
-        // 사운드
         SoundManager._Inst.PlaySFX(SoundCategory.SFX, "MainSceneObjectSpawn");
 
         yield return StartCoroutine(_DissolveEffect.DissolveInCo());
@@ -46,7 +45,7 @@ public class MainSceneLeaderBoardUIObject : MainSceneUIObjectBase
             _MainSceneUIManager.LeaderBoardUIOn();
             _MainSceneManager.RespawnUIObject(1, _RespawnDelay);
 
-            // 리더보드 UI 갱신
+            // 由щ뜑蹂대뱶 UI
             MainSceneLeaderBoardUIManager tLeaderBoardUIManager = _MainSceneUIManager.GetComponent<MainSceneLeaderBoardUIManager>();
             if (tLeaderBoardUIManager != null)
             {

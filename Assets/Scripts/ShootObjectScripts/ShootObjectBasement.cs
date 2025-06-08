@@ -1,98 +1,3 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using Unity.VisualScripting;
-//using UnityEngine;
-
-//public class ShootObjectBasement : MonoBehaviour
-//{
-//    // ¿ÀºêÁ§Æ® µ¥ÀÌÅÍ
-//    [SerializeField]
-//    ShootObject _ShootObjectData;
-//    public ShootObject GetShootObjectData { get { return _ShootObjectData; } }
-
-//    bool _IsStable = false;
-//    public bool GetIsStable {  get { return _IsStable; } }
-
-//    private MeshCollider _MeshCollider;
-
-//    private void Awake()
-//    {
-
-//        _MeshCollider = GetComponent<MeshCollider>();
-
-//    }
-
-
-//    private void Start()
-//    {
-
-//    }
-
-//    // Ç®¿¡¼­ Àç»ı¼º ½Ã ´Ù½Ã IsStable = false;
-//    private void OnEnable()
-//    {
-//        _IsStable = false;
-
-//        StartCoroutine(TriggerOnOff());
-//    }
-
-//    private void OnDisable()
-//    {
-//        // ²¨Áú ¶§ ¹İµå½Ã Æ®¸®°Å ÄÑµÎ±â
-//        _MeshCollider.isTrigger = true;
-//        StopAllCoroutines();
-//    }
-
-//    // Update is called once per frame
-//    void Update()
-//    {
-
-//    }
-
-//    private IEnumerator TriggerOnOff()
-//    {        
-//        _MeshCollider.isTrigger = true;
-
-//        yield return null;
-
-//        _MeshCollider.isTrigger = false;
-//    }
-
-
-//    // Ãæµ¹ Ã¼Å©
-//    // 1. ³ª¿Í °°Àº IDÀÎÁö
-//    // 2. °°´Ù¸é µÑ´Ù ºñÈ°¼ºÈ­ ÈÄ ´ÙÀ½ ID ¿ÀºêÁ§Æ® Ç®¸µ -> »ı¼ºÇÒ À§Ä¡´Â ? 
-
-//    private void OnCollisionEnter(Collision collision)
-//    {
-//        // Ã¹ Á¢ÃË ½Ã Stable »óÅÂ·Î º¯°æ
-//        if(_IsStable == false)
-//        {
-//            _IsStable = true;
-//        }        
-
-//        //Áß¾Ó ±¸½½ÀÌ¶ó¸é Ã³¸®ÇÏÁö ¾ÊÀ½
-//        if (collision.gameObject.CompareTag("ZeroPointSphere"))
-//        {
-//            return;
-//        }
-
-//        if (collision.gameObject.GetComponent<ShootObjectBasement>()._ShootObjectData.GetShootObjectID == this._ShootObjectData.GetShootObjectID)
-//        {
-//            // µÑ Áß ÇÑ °÷¿¡¼­¸¸ ÀÛµ¿ÇÒ ¼ö ÀÖ°Ô ÇØ½ÃÄÚµå·Î Á¦ÇÑ
-//            if(this.gameObject.GetHashCode() < collision.gameObject.GetHashCode())
-//            {
-//                // Ãæµ¹½Ã ÇÔ¼ö ¼öÇà
-//                GameSceneManager._Inst.CollisionObject(this.gameObject, collision.gameObject);
-
-//                // Á¡¼ö Ãß°¡ (ÇÕÃ¼µÈ ¿ÀºêÁ§Æ®ÀÇ ID·Î Á¡¼ö È¯»ê)
-//                GameSceneScoreManager._Inst.AddScoreByCombine(GetShootObjectData.GetShootObjectID);
-
-//            }
-//        }
-//    }
-//}
-
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -100,100 +5,86 @@ using UnityEngine;
 
 public class ShootObjectBasement : MonoBehaviour
 {
-    // ¿ÀºêÁ§Æ® µ¥ÀÌÅÍ
     [SerializeField]
-    ShootObject _ShootObjectData;
+    ShootObject _ShootObjectData;       // í’€ë§ëœ ì˜¤ë¸Œì íŠ¸ì˜ ë°ì´í„°
 
-    GameSceneManager _GameSceneManager;
-    public ShootObject GetShootObjectData { get { return _ShootObjectData; } }
+    GameSceneManager _GameSceneManager; // ì”¬ ë§¤ë‹ˆì € ì°¸ì¡°
 
-    bool _IsStable = false;
-    public bool GetIsStable { get { return _IsStable; } }
+    public ShootObject GetShootObjectData => _ShootObjectData; // ë°ì´í„° ì ‘ê·¼ í”„ë¡œí¼í‹°
 
-    private MeshCollider _MeshCollider;
+    bool _IsStable = false;             // ì¶©ëŒ í›„ ì•ˆì • ìƒíƒœ í”Œë˜ê·¸
+    public bool GetIsStable => _IsStable;
+
+    private MeshCollider _MeshCollider;  // ì½œë¼ì´ë” ì°¸ì¡°
 
     private void Awake()
     {
-
-        _MeshCollider = GetComponent<MeshCollider>();
-
+        _MeshCollider = GetComponent<MeshCollider>(); // ì½œë¼ì´ë” ê°€ì ¸ì˜¤ê¸°
     }
-
 
     private void Start()
     {
-        _GameSceneManager = GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
+        // ì”¬ ë§¤ë‹ˆì € ê°€ì ¸ì˜¤ê¸°
+        _GameSceneManager = GameObject
+            .FindGameObjectWithTag("GameSceneManager")
+            .GetComponent<GameSceneManager>();
     }
 
-    // Ç®¿¡¼­ Àç»ı¼º ½Ã ´Ù½Ã IsStable = false;
     private void OnEnable()
     {
-        _IsStable = false;
-
-        StartCoroutine(TriggerOnOff());
+        _IsStable = false;              // í™œì„±í™” ì‹œ ì•ˆì • í”Œë˜ê·¸ ì´ˆê¸°í™”
+        StartCoroutine(TriggerOnOff()); // íŠ¸ë¦¬ê±° ëª¨ë“œ ì ê¹ ì¼œê¸°
     }
 
     private void OnDisable()
     {
-        // ²¨Áú ¶§ ¹İµå½Ã Æ®¸®°Å ÄÑµÎ±â
+        // ë¹„í™œì„±í™” ì‹œ ì½œë¼ì´ë” íŠ¸ë¦¬ê±° ëª¨ë“œ ìœ ì§€ ë° ì½”ë£¨í‹´ ì •ë¦¬
         _MeshCollider.isTrigger = true;
         StopAllCoroutines();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // ì²« í”„ë ˆì„ì—ë§Œ íŠ¸ë¦¬ê±° ëª¨ë“œë¡œ ì„¤ì •í•˜ê³  ë‹¤ìŒ í”„ë ˆì„ì— ë¦¬ì…‹
     private IEnumerator TriggerOnOff()
     {
         _MeshCollider.isTrigger = true;
-
         yield return null;
-
         _MeshCollider.isTrigger = false;
     }
 
-
-    // Ãæµ¹ Ã¼Å©
-    // 1. ³ª¿Í °°Àº IDÀÎÁö
-    // 2. °°´Ù¸é µÑ´Ù ºñÈ°¼ºÈ­ ÈÄ ´ÙÀ½ ID ¿ÀºêÁ§Æ® Ç®¸µ -> »ı¼ºÇÒ À§Ä¡´Â ? 
-
     private void OnCollisionEnter(Collision collision)
     {
-        // Ã¹ Á¢ÃË ½Ã Stable »óÅÂ·Î º¯°æ
-        if (_IsStable == false)
-        {
+        // ì²« ì¶©ëŒ ì‹œ ì•ˆì • ìƒíƒœë¡œ ì „í™˜
+        if (!_IsStable)
             _IsStable = true;
-        }
 
-        //Áß¾Ó ±¸½½ÀÌ¶ó¸é Ã³¸®ÇÏÁö ¾ÊÀ½
+        // ì¤‘ì‹¬ êµ¬ì²´ì™€ì˜ ì¶©ëŒì€ ë¬´ì‹œ
         if (collision.gameObject.CompareTag("ZeroPointSphere"))
-        {
             return;
-        }
 
-        if (collision.gameObject.GetComponent<ShootObjectBasement>()._ShootObjectData.GetShootObjectID == this._ShootObjectData.GetShootObjectID)
+        // ê°™ì€ IDë¼ë¦¬ë§Œ í•©ì„± ë¡œì§ ì‹¤í–‰
+        var other = collision.gameObject.GetComponent<ShootObjectBasement>();
+        if (other._ShootObjectData.GetShootObjectID == _ShootObjectData.GetShootObjectID)
         {
-            // µÑ Áß ÇÑ °÷¿¡¼­¸¸ ÀÛµ¿ÇÒ ¼ö ÀÖ°Ô ÇØ½ÃÄÚµå·Î Á¦ÇÑ
-            if (this.gameObject.GetHashCode() < collision.gameObject.GetHashCode())
+            // í•œ ìŒë§Œ ì²˜ë¦¬í•˜ê¸° ìœ„í•œ í•´ì‹œì½”ë“œ ë¹„êµ
+            if (this.GetHashCode() < other.GetHashCode())
             {
-                // Ãæµ¹½Ã ÇÔ¼ö ¼öÇà
+                // í•©ì„± ì²˜ë¦¬ í˜¸ì¶œ
                 _GameSceneManager.CollisionObject(this.gameObject, collision.gameObject);
 
-                // Á¡¼ö Ãß°¡ (ÇÕÃ¼µÈ ¿ÀºêÁ§Æ®ÀÇ ID·Î Á¡¼ö È¯»ê)
-                GameSceneScoreManager._Inst.AddScoreByCombine(GetShootObjectData.GetShootObjectID);
-
+                // í•©ì„± ì ìˆ˜ ì¶”ê°€
+                GameSceneScoreManager._Inst.AddScoreByCombine(_ShootObjectData.GetShootObjectID);
             }
         }
     }
 
+    // ì˜¤ë¸Œì íŠ¸ ì¼ì‹œ ì •ì§€ (ì—”ë”© ì‹œ í˜¸ì¶œ)
     public void PauseObject()
     {
-        Rigidbody tRig = gameObject.GetComponent<Rigidbody>();
-
-        tRig.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+        var tRig = GetComponent<Rigidbody>();
+        // ìœ„ì¹˜/íšŒì „ ëª¨ë‘ ê³ ì •
+        tRig.constraints = RigidbodyConstraints.FreezePositionX 
+                         | RigidbodyConstraints.FreezePositionY 
+                         | RigidbodyConstraints.FreezePositionZ;
         tRig.freezeRotation = true;
     }
 }

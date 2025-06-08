@@ -25,7 +25,6 @@ public class MainSceneStartUIObject : MainSceneUIObjectBase
 
     IEnumerator RespwanCo()
     {
-        // »ç¿îµå
         SoundManager._Inst.PlaySFX(SoundCategory.SFX, "MainSceneObjectSpawn");
 
         yield return StartCoroutine(_DissolveEffect.DissolveInCo());

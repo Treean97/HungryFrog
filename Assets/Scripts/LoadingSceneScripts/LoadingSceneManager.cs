@@ -7,31 +7,34 @@ using TMPro;
 
 public class LoadingSceneManager : MonoBehaviour
 {
-    public Slider _LoadingBar;  // ÁøÇà »óÅÂ¸¦ Ç¥½ÃÇÒ ½½¶óÀÌ´õ
-    public TMP_Text _LoadingText;   // ÁøÇà »óÅÂ¸¦ Ç¥½ÃÇÒ ÅØ½ºÆ®
+    // ë¡œë”©ë°” ìŠ¬ë¼ì´ë” ì°¸ì¡°
+    public Slider _LoadingBar;
 
-    private void Start()
+    // ë¡œë”© ì§„í–‰ í…ìŠ¤íŠ¸ ì°¸ì¡°
+    public TMP_Text _LoadingText;
+
+    void Start()
     {
-        // °ÔÀÓ ¾ÀÀ» ºñµ¿±âÀûÀ¸·Î ·Îµå
+        // ê²Œì„ ì”¬ ë¹„ë™ê¸° ë¡œë“œ ì‹œì‘
         StartCoroutine(LoadGameSceneAsync("GameScene"));
     }
 
     IEnumerator LoadGameSceneAsync(string tSceneName)
     {
-        // ºñµ¿±â ¾À ·Îµå ½ÃÀÛ
+        // ë¹„ë™ê¸° ë¡œë“œ ì—°ì‚° ì‹¤í–‰
         AsyncOperation tOperation = SceneManager.LoadSceneAsync(tSceneName);
 
-        // ¾À ·Îµå°¡ ¿Ï·áµÉ ¶§±îÁö ¹İº¹
+        // ë¡œë“œ ì™„ë£Œ ì „ê¹Œì§€ ì§„í–‰ë¥  ì—…ë°ì´íŠ¸
         while (!tOperation.isDone)
         {
-            // ·ÎµåµÈ ¾çÀ» 0¿¡¼­ 1 »çÀÌ·Î ¹İÈ¯ (50%±îÁö´Â ·Îµù ÁØºñ, 100%°¡ ¿Ï·á)
+            // progressëŠ” 0~0.9 ë²”ìœ„ì´ë¯€ë¡œ 0~1ë¡œ ë³´ì •
             float tProgress = Mathf.Clamp01(tOperation.progress / 0.9f);
 
-            // ¹Ù¿Í ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
+            // UIì— ì§„í–‰ë¥  í‘œì‹œ
             _LoadingBar.value = tProgress;
-            _LoadingText.text = (tProgress * 100f).ToString("F0") + "%...";
+            _LoadingText.text  = (tProgress * 100f).ToString("F0") + "%...";
 
-            yield return null;  // ´ÙÀ½ ÇÁ·¹ÀÓ±îÁö ´ë±â
+            yield return null; // ë‹¤ìŒ í”„ë ˆì„ê¹Œì§€ ëŒ€ê¸°
         }
     }
 }

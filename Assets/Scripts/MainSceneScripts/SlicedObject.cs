@@ -27,8 +27,8 @@ public class SlicedObject : MonoBehaviour
 
     private IEnumerator DestroyAfterDissolve()
     {       
-        yield return StartCoroutine(_Dissolve.DissolveOutCo()); // 디졸브 끝날 때까지 기다림
-        Destroy(gameObject); // 이후에 제거
+        yield return StartCoroutine(_Dissolve.DissolveOutCo());
+        Destroy(gameObject);
     }
 
 }

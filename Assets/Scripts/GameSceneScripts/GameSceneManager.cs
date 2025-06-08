@@ -6,125 +6,109 @@ using UnityEngine.UI;
 
 public class GameSceneManager : MonoBehaviour
 {
-    // Planet ¿ÀºêÁ§Æ®ÀÇ Á¾·ù
+    // Planet í’€ì˜ ìµœëŒ€ ID
     int _MaxID;
 
-    // ¿ÀÇÁ´× ½Ã°£
+    // ì˜¤í”„ë‹ ì§€ì† ì‹œê°„
     [SerializeField]
     private int _OpeningDuration;
     public int GetOpeningDuration => _OpeningDuration;
 
+    // ì˜¤í”„ë‹ ì§„í–‰ ì¤‘ ì—¬ë¶€
     private bool _IsOpening = true;
     public bool GetIsOpening => _IsOpening;
 
+    // UI ë§¤ë‹ˆì € ì°¸ì¡°
     [SerializeField]
     GameSceneUIManager _GameSceneUIManager;
 
+    // ì—”ë”© ì²˜ë¦¬ í”Œë˜ê·¸
     bool IsEnd = false;
 
-    // Start is called before the first frame update
     void Start()
     {
+        // í’€ ID ì´ˆê¸°í™” ë° BGM ì¬ìƒ, ì˜¤í”„ë‹ ë¸”ë¡ ì‹œì‘
         _MaxID = ObjectPoolManager._Inst._Pools.Count - 1;
-
         SoundManager._Inst.PlayBGM("GameSceneBGM");
-
-
         StartCoroutine(BlockShootOnOpening());
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        // (í•„ìš” ì‹œ ì—…ë°ì´íŠ¸ ë¡œì§ ì¶”ê°€)
     }
 
-    // ¿ÀÇÁ´× µ¿¾È ¹ß»ç ¹æÁö
+    // ì˜¤í”„ë‹ ì‹œê°„ ë™ì•ˆ ë°œì‚¬ ê¸°ëŠ¥ ì°¨ë‹¨
     IEnumerator BlockShootOnOpening()
     {
         yield return new WaitForSeconds(_OpeningDuration);
-
         _IsOpening = false;
     }
 
-
-    // A, BÀÇ Ãæµ¹
+    // ë‘ ì˜¤ë¸Œì íŠ¸ ì¶©ëŒ ì‹œ í•©ì„± ì²˜ë¦¬
     public void CollisionObject(GameObject tObject_A, GameObject tObject_B)
     {
-        // »ç¿îµå
+        // í•©ì„± ì‚¬ìš´ë“œ ì¬ìƒ
         SoundManager._Inst.PlaySFX(SoundCategory.SFX, "CombineSound");
 
-        // Object_A³ª BÀÇ ID
-        int tObjectID = tObject_A.gameObject.GetComponent<ShootObjectBasement>().GetShootObjectData.GetShootObjectID;
+        // A ì˜¤ë¸Œì íŠ¸ì˜ ID ê°€ì ¸ì˜¤ê¸°
+        int tObjectID = tObject_A.GetComponent<ShootObjectBasement>().GetShootObjectData.GetShootObjectID;
 
-        // ´õÀÌ»ó ÇÕÃÄÁú°Ô ¾ø´Ù¸é ±×³É ¸®ÅÏ
+        // ìµœëŒ€ ID ì´ìƒì´ë©´ í•©ì„± ë¶ˆê°€
         if (tObjectID >= _MaxID)
-        {
             return;
-        }        
 
-        // ¿ÀºêÁ§Æ® ¸®ÅÏ
+        // ì¶©ëŒ ì˜¤ë¸Œì íŠ¸ ë°˜í™˜
         ReturnObject(tObject_A, tObject_B);
 
-       // »õ·Î¿î ¿ÀºêÁ§Æ® ID´Â ±âÁ¸ÀÇ ID + 1
+        // ìƒˆ ì˜¤ë¸Œì íŠ¸ ID ë° ì´ë¦„ ê²°ì •
         int tNewObjectID = tObjectID + 1;
-
-        // ÀÌ¸§À» Ã£¾Æ¼­ Ç®¿¡¼­ Get
         string tNewObjectName = ObjectPoolManager._Inst._Pools[tNewObjectID].Name;
 
-        // »õ·Î¿î ¿ÀºêÁ§Æ®ÀÇ À§Ä¡ ¼³Á¤ -> ±âÁ¸ ¿ÀºêÁ§Æ® A¿Í BÀÇ Áß°£ÁöÁ¡
+        // í•©ì„± ìœ„ì¹˜ ê³„ì‚° ë° ì˜¤ë¸Œì íŠ¸ ìƒì„±
         Vector3 tSpawnPos = (tObject_A.transform.position + tObject_B.transform.position) / 2f;
-
-        // »õ·Î¿î ¿ÀºêÁ§Æ® Get
-        GetObject(tNewObjectName.ToString(), tSpawnPos);
-
-
+        GetObject(tNewObjectName, tSpawnPos);
     }
 
-    // ¿ÀºêÁ§Æ®¸¦ ¹Ş¾Æ Á¦°Å
+    // ì˜¤ë¸Œì íŠ¸ í’€ì— ì‚¬ìš©ëœ ì˜¤ë¸Œì íŠ¸ ë°˜í™˜
     void ReturnObject(GameObject tObject_A, GameObject tObject_B)
     {
         ObjectPoolManager._Inst.ReturnObject(tObject_A);
         ObjectPoolManager._Inst.ReturnObject(tObject_B);
     }
 
-    // ID¸¦ ¹Ş¾Æ »ı¼º
+    // í’€ì—ì„œ ì˜¤ë¸Œì íŠ¸ ê°€ì ¸ì™€ ìœ„ì¹˜ ì„¤ì •
     void GetObject(string tName, Vector3 tSpawnPos)
     {
         GameObject tGO = ObjectPoolManager._Inst.GetObject(tName);
         tGO.transform.position = tSpawnPos;
     }
 
+    // ê²Œì„ ì—”ë”© ì²˜ë¦¬ ë° ì ìˆ˜ ì €ì¥
     public void Ending()
     {
-        if (!IsEnd)
-        {
-            IsEnd = true;
+        if (IsEnd) return;
+        IsEnd = true;
 
-            _GameSceneUIManager.Ending();
+        // UI ì—”ë”© ì—°ì¶œ
+        _GameSceneUIManager.Ending();
 
-            // ¹ß»ç ¿ÀºêÁ§Æ® Á¤Áö
-            GameObject[] tShootObject = GameObject.FindGameObjectsWithTag("ShootObject");
-            foreach (var item in tShootObject)
-            {
-                item.GetComponent<ShootObjectBasement>().PauseObject();
-            }
+        // ëª¨ë“  íˆ¬ì‚¬ì²´ ì¼ì‹œì •ì§€
+        GameObject[] tShootObject = GameObject.FindGameObjectsWithTag("ShootObject");
+        foreach (var item in tShootObject)
+            item.GetComponent<ShootObjectBasement>().PauseObject();
 
-            // µ¥ÀÌÅÍ Playfab ÀúÀå
-            PlayFabLeaderboardManager._Inst.SaveScore(GameSceneScoreManager._Inst.GetScore,
+        // PlayFabì— ì ìˆ˜ ì €ì¥ ìš”ì²­
+        PlayFabLeaderboardManager._Inst.SaveScore(
+            GameSceneScoreManager._Inst.GetScore,
             onSuccess: () =>
             {
-                Debug.Log("PlayFab¿¡ ÃÖÁ¾ Á¡¼ö ¾÷·Îµå ¼º°ø!");
-                // ¿¹: ¿©±â¼­ ¸®´õº¸µå ¾ÀÀ¸·Î ÀüÈ¯ÇÏ°Å³ª ¿Ï·á ÆË¾÷ ¶ç¿ì±â
+                Debug.Log("PlayFab ì ìˆ˜ ì €ì¥ ì„±ê³µ!");
             },
             onError: (errMsg) =>
             {
-                Debug.LogError("PlayFab Á¡¼ö ¾÷·Îµå ½ÇÆĞ: " + errMsg);
-                // ¿¹: ¿À·ù UI Ç¥½Ã
+                Debug.LogError("PlayFab ì ìˆ˜ ì €ì¥ ì‹¤íŒ¨: " + errMsg);
             }
-            );
-        }
-        
+        );
     }
-
 }

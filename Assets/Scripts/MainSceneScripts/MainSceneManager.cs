@@ -35,7 +35,6 @@ public class MainSceneManager : MonoBehaviour
 
         _IsSceneChanging = false;
 
-        // »ç¿îµå
         SoundManager._Inst.PlayBGM("MainSceneBGM");
     }
 
@@ -59,7 +58,6 @@ public class MainSceneManager : MonoBehaviour
 
         yield return new WaitForSeconds(WaitForLoadScene);
 
-        // ·Îµù ¾À ÈÄ °ÔÀÓ ¾À ÀüÈ¯
         SceneManager.LoadScene("LoadingScene");
 
     }
@@ -68,7 +66,6 @@ public class MainSceneManager : MonoBehaviour
     {
         if(!_IsSceneChanging)
         {
-            // ¿ÀºêÁ§Æ® »ý¼º
             _GameTitleGO = Instantiate(_GameTitlePF, _GameTitleSpawnTF.position, _GameTitlePF.transform.rotation);
         }
         
@@ -90,7 +87,7 @@ public class MainSceneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(tDelay);
 
-        // ¿ÀºêÁ§Æ® »ý¼º
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         Instantiate(_MainSceneUIPF[tObjectIndex], _MainSceneUITF[tObjectIndex]);
     }
 

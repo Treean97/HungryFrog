@@ -20,12 +20,6 @@ public class MainSceneBtnManager : MonoBehaviour
         
     }
 
-    // IsKinematic 옵션 때문에 OnCollisionEnter가 안됨
-    private void OnTriggerEnter(Collider other)
-    {        
-
-    }
-
     public void LoadLoadingScene()
     {
         StartCoroutine(LoadLoadingSceneCo());
@@ -35,8 +29,6 @@ public class MainSceneBtnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(WaitForLoadScene);
 
-        // 로딩 씬 후 게임 씬 전환
-        SceneManager.LoadScene("LoadingScene");
-                
+        SceneManager.LoadScene("LoadingScene");                
     }
 }

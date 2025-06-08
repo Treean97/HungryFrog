@@ -1,81 +1,41 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using Unity.VisualScripting;
-//using UnityEngine;
-//using UnityEngine.UI;
-
-//public class ShootObjectCheckOutline : MonoBehaviour
-//{
-//    GameObject _OutlineShpere; // ¿ÜºÎ¶óÀÎ
-//    GameObject _ZeroPointSphere; // Áß½É±¸
-//    ShootObjectBasement _ShootObjectBasement;
-//    float _OutlineRadius;
-//    float _ObjectRadius;
-
-//    GameSceneManager _GameSceneManager;
-
-//    void Start()
-//    {
-//        _ZeroPointSphere = GameObject.FindGameObjectWithTag("ZeroPointSphere");
-//        _OutlineShpere = GameObject.FindGameObjectWithTag("OutlineSphere");
-//        _ShootObjectBasement = GetComponent<ShootObjectBasement>();
-
-//        // ¿ÜºÎ¶óÀÎÀÇ ¹İÁö¸§ °è»ê
-//        _OutlineRadius = _OutlineShpere.transform.localScale.x * 0.5f;
-
-//        // ¿ÀºêÁ§Æ®ÀÇ ¹İÁö¸§ °è»ê (MeshCollider ±âÁØ, ´ë·«Àû)
-//        MeshCollider tMeshCollider = GetComponent<MeshCollider>();
-//        _ObjectRadius = tMeshCollider.bounds.extents.magnitude;
-
-//        _GameSceneManager = GameObject.FindGameObjectWithTag("GameSceneManager").GetComponent<GameSceneManager>();
-//    }
-
-//    private void Update()
-//    {
-//        //Debug.Log(Vector2.Distance(this.transform.position, Vector3.zero));
-
-//        // ¿ÀºêÁ§Æ®°¡ ¿øÀÇ Å©±â¸¦ ¹ş¾î³ª´ÂÁö È®ÀÎ && »óÅÂ°¡ StableÀÎÁö È®ÀÎ
-//        if (Vector3.Distance(this.transform.position, _ZeroPointSphere.transform.position) - _ObjectRadius > _OutlineRadius
-//            && _ShootObjectBasement.GetIsStable == true)
-//        {
-//            _GameSceneManager.Ending();
-//        }
-//    }
-//}
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShootObjectCheckOutline : MonoBehaviour
 {
-    GameObject _OutlineSphere;      // ¿Ü°û ±¸(¾Æ¿ô¶óÀÎ)
-    GameObject _ZeroPointSphere;    // Áß½É ±¸
-    ShootObjectBasement _ShootObjectBasement;
+    // 1) ì°¸ì¡°í•  ì˜¤ë¸Œì íŠ¸
+    GameObject _OutlineSphere;            // í…Œë‘ë¦¬ ì—­í•  êµ¬ì²´
+    GameObject _ZeroPointSphere;          // ì¤‘ì‹¬ ì—­í•  êµ¬ì²´
+    ShootObjectBasement _ShootObjectBasement; // íˆ¬ì‚¬ì²´ ë² ì´ìŠ¤ ì»´í¬ë„ŒíŠ¸
 
-    float _OutlineRadius;
-    float _ObjectRadius;
+    // 2) ë°˜ì§€ë¦„ ì €ì¥ìš©
+    float _OutlineRadius; // í…Œë‘ë¦¬ êµ¬ì²´ ë°˜ê²½
+    float _ObjectRadius;  // íˆ¬ì‚¬ì²´ ë°˜ê²½
 
-    GameSceneManager _GameSceneManager;
+    GameSceneManager _GameSceneManager; // ì”¬ ë§¤ë‹ˆì € ì°¸ì¡°
 
     void Start()
     {
+        // ì°¸ì¡° ì˜¤ë¸Œì íŠ¸ ì°¾ê¸°
         _ZeroPointSphere = GameObject.FindGameObjectWithTag("ZeroPointSphere");
         _OutlineSphere = GameObject.FindGameObjectWithTag("OutlineSphere");
         _ShootObjectBasement = GetComponent<ShootObjectBasement>();
 
-        // OutlineSphere ¹İÁö¸§ °è»ê
+        // 3) OutlineSphere ë°˜ê²½ ê³„ì‚° (Collider ì‚¬ìš©)
         SphereCollider outlineCol = _OutlineSphere.GetComponent<SphereCollider>();
         if (outlineCol != null)
         {
+            // ì½œë¼ì´ë” ë°˜ê²½ì— ìŠ¤ì¼€ì¼ ê³±í•´ì„œ ìµœì¢… ë°˜ê²½ êµ¬í•¨
             _OutlineRadius = outlineCol.radius * _OutlineSphere.transform.localScale.x;
         }
         else
         {
+            // ì½œë¼ì´ë” ì—†ìœ¼ë©´ ìŠ¤ì¼€ì¼ ê¸°ì¤€ìœ¼ë¡œ ëŒ€ëµ ë°˜ê²½ ê³„ì‚°
             _OutlineRadius = _OutlineSphere.transform.localScale.x * 0.5f;
         }
 
-        // ÀÚ½ÅÀÇ ¹İÁö¸§ °è»ê
+        // 4) íˆ¬ì‚¬ì²´ ë°˜ê²½ ê³„ì‚° (SphereCollider ë˜ëŠ” MeshCollider)
         SphereCollider meshCol = GetComponent<SphereCollider>();
         if (meshCol != null)
         {
@@ -87,25 +47,24 @@ public class ShootObjectCheckOutline : MonoBehaviour
             _ObjectRadius = fallback.bounds.extents.magnitude;
         }
 
+        // ì”¬ ë§¤ë‹ˆì € ê°€ì ¸ì˜¤ê¸°
         _GameSceneManager = GameObject.FindGameObjectWithTag("GameSceneManager")
                                 .GetComponent<GameSceneManager>();
     }
 
     void Update()
     {
-        // 3) 3D °Å¸® °è»ê (Vector3.Distance »ç¿ë)
+        // 5) ì¤‘ì‹¬ êµ¬ì²´ì™€ íˆ¬ì‚¬ì²´ ê°„ ê±°ë¦¬ ê³„ì‚°
         float currentDistance = Vector3.Distance(
             transform.position,
             _ZeroPointSphere.transform.position
         );
 
-        // 4) ¡°¿ÏÀüÈ÷ ¹ş¾î³µÀ» ¶§¡± ÆÇÁ¤: 
-        //    Áß½É °£ °Å¸® > (¾Æ¿ô¶óÀÎ ¹İÁö¸§ + ¿ÀºêÁ§Æ® ¹İÁö¸§)
+        // 6) ê±°ë¦¬ > (í…Œë‘ë¦¬ ë°˜ê²½ + íˆ¬ì‚¬ì²´ ë°˜ê²½) ì´ê³  ì•ˆì • ìƒíƒœë©´ ì—”ë”© í˜¸ì¶œ
         if (currentDistance > _OutlineRadius + _ObjectRadius
             && _ShootObjectBasement.GetIsStable)
         {
-            _GameSceneManager.Ending();
+            _GameSceneManager.Ending(); // ê²Œì„ ì”¬ ì—”ë”© ì²˜ë¦¬
         }
     }
 }
-

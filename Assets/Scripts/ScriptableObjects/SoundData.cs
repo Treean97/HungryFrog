@@ -1,13 +1,3 @@
-//using UnityEngine;
-
-//[CreateAssetMenu(fileName = "SFXObjectData", menuName = "Scriptable Object/SFX Data")]
-//public class SoundData : ScriptableObject
-//{
-//    public string _SoundName;
-//    public AudioClip _Clip;
-//    public float _Volume = 1f;
-//}
-
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SFXObjectData", menuName = "Scriptable Object/SFX Data")]
@@ -16,5 +6,5 @@ public class SoundData : ScriptableObject
     public string _SoundName;
     public AudioClip _Clip;
     public float _Volume = 1f;
-    public SoundCategory _Category; // Ãß°¡: »ç¿îµå Ä«Å×°í¸®
+    public SoundCategory _Category; // ï¿½ß°ï¿½: ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½×°ï¿½ï¿½ï¿½
 }
