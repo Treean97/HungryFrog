@@ -1,5 +1,9 @@
 name: UnityBuildAndDeploy
-on: workflow_dispatch
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
 permissions:
   contents: read
@@ -13,13 +17,22 @@ env:
 jobs:
   buildForAndroid:
     runs-on: [self-hosted, linux]
-
     steps:
-      - name: Check Out
+      - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
+
+      - name: Parse semantic tag
+        id: semver
+        run: |
+          # refs/tags/v1.1.0 혹은 refs/tags/1.1.0 → 1.1.0
+          semver=${GITHUB_REF#refs/tags/}
+          echo "SEMVER=$semver" >> $GITHUB_ENV
+          # Major.Minor.Patch → 정수 버전코드 (예: 1*10000 + 1*100 + 0 = 10100)
+          IFS='.' read -r maj min pat <<< "$semver"
+          code=$(( maj * 10000 + min * 100 + pat ))
+          echo "ANDROID_VERSION_CODE=$code" >> $GITHUB_ENV
 
       - name: Cache Library
         uses: actions/cache@v4
@@ -32,18 +45,16 @@ jobs:
         id: build
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          version:            ${{ env.UNITY_VERSION }}
           targetPlatform:     Android
           androidExportType:  androidAppBundle
-          androidKeystoreName:   user.keystore
-          androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
-          androidKeystorePass:   ${{ secrets.KEYSTORE_PASSWORD }}
-          androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
-          androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
+          # Git 태그(v1.1.0 또는 1.1.0)를 Version에 반영
+          versioning:         Semantic
+          # 파싱한 버전코드를 Android VersionCode로 설정
+          androidVersionCode: ${{ env.ANDROID_VERSION_CODE }}
 
       - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
@@ -54,7 +65,6 @@ jobs:
   deployToPlayStore:
     needs: buildForAndroid
     runs-on: ubuntu-latest
-
     steps:
       - name: Download AAB
         uses: actions/download-artifact@v4
@@ -62,13 +72,10 @@ jobs:
           name: game-aab
           path: ./release
 
-      - name: List downloaded files
-        run: ls -R ./release
-
       - name: Publish to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName:        ${{ env.PACKAGE_NAME }}
-          track:              ${{ env.PLAY_TRACK }}
-          releaseFiles:       release/**/*.aab
+          packageName:                ${{ env.PACKAGE_NAME }}
+          track:                      ${{ env.PLAY_TRACK }}
+          releaseFiles:               release/**/*.aab
