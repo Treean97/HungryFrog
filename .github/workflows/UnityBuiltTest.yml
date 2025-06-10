@@ -64,6 +64,7 @@ jobs:
           UNITY_LICENSE:   ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL:     ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
+          RUN_AS_HOST_USER: true
         with:
           version:            ${{ env.UNITY_VERSION }}
           targetPlatform:     Android
