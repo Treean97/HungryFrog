@@ -1,6 +1,5 @@
 name: UnityBuildAndDeploy
 
-# ① 태그 푸시와 수동 실행 둘 다 대응
 on:
   push:
     tags:
@@ -27,29 +26,26 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      # ② 태그 이름에서 VERSION, VERSION_CODE 추출
+      # ① 태그에서 VERSION, VERSION_CODE 추출
       - name: Extract version from tag
         if: startsWith(github.ref, 'refs/tags/')
         id: extract
         run: |
-          # refs/tags/v1.2.3 → v1.2.3
           TAG="${GITHUB_REF#refs/tags/}"
-          # v 제거 → 1.2.3
           VER="${TAG#v}"
-          echo "VERSION=${VER}" >> $GITHUB_ENV
-
-          # 예) 1.2.3 → 1*10000 + 2*100 + 3 = 10203
+          echo "VERSION=$VER" >> $GITHUB_ENV
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VER"
           CODE=$(( MAJOR * 10000 + MINOR * 100 + PATCH ))
-          echo "VERSION_CODE=${CODE}" >> $GITHUB_ENV
+          echo "VERSION_CODE=$CODE" >> $GITHUB_ENV
 
-      # ③ ProjectSettings.asset 치환
+      # ② Unity 버전 정보 수정
       - name: Update Unity PlayerSettings version
         if: env.VERSION != ''
         run: |
           sed -i "s/^  bundleVersion: .*/  bundleVersion: \"$VERSION\"/" ProjectSettings/ProjectSettings.asset
           sed -i "s/^  androidBundleVersionCode: .*/  androidBundleVersionCode: ${VERSION_CODE}/" ProjectSettings/ProjectSettings.asset
 
+      # ③ 라이브러리 캐시
       - name: Cache Library
         uses: actions/cache@v4
         with:
@@ -57,6 +53,7 @@ jobs:
           key: Library-${{ hashFiles('Assets/**','Packages/**','ProjectSettings/**') }}
           restore-keys: Library-
 
+      # ④ Unity 빌드
       - name: Unity Build
         id: build
         uses: game-ci/unity-builder@v4
@@ -66,15 +63,17 @@ jobs:
           UNITY_PASSWORD:  ${{ secrets.UNITY_PASSWORD }}
           RUN_AS_HOST_USER: true
         with:
-          version:            ${{ env.UNITY_VERSION }}
-          targetPlatform:     Android
-          androidExportType:  androidAppBundle
+          version:               ${{ env.UNITY_VERSION }}
+          targetPlatform:        Android
+          androidExportType:     androidAppBundle
+          allowDirtyBuild:       true                   
           androidKeystoreName:   user.keystore
           androidKeystoreBase64: ${{ secrets.KEYSTORE_BASE64 }}
           androidKeystorePass:   ${{ secrets.KEYSTORE_PASSWORD }}
           androidKeyaliasName:   ${{ secrets.KEY_ALIAS }}
           androidKeyaliasPass:   ${{ secrets.KEY_PASSWORD }}
 
+      # ⑤ 결과물 업로드
       - name: Upload AAB as Artifact
         uses: actions/upload-artifact@v4
         with:
