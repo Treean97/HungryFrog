@@ -43,5 +43,5 @@ Unity 엔진을 기반으로 제작한 3D 모바일 캐주얼 게임입니다.
   - ScriptableObject와 Object Pool 적용으로 메모리 사용량 및 런타임 성능 개선
 
 ## 기술서 및 동영상
-  - 기술서 :
+  - 기술서 : https://drive.google.com/file/d/1j_0mr2SqTEe4ZgoKtfy9mRc__UQpowkN/view?usp=drive_link
   - 동영상 : https://youtu.be/8OX1WxW7JWU
