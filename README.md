@@ -59,7 +59,6 @@
   4. ID 중복 방지를 위해 랜덤 태그를 자동 부여
 </details>
 
----
 
 ### 2) CI/CD 파이프라인 (GitHub Actions + Self-Hosted Runner)
 
@@ -83,7 +82,6 @@
   - Play Store 내부 테스트 트랙 자동 배포
 </details>
 
----
 
 ### 3) 데이터 관리 (PlayFab + 로컬 JSON)
 
@@ -110,7 +108,6 @@
      - 로컬 JSON 파일에 함께 저장
 </details>
 
----
 
 ### 4) 최적화 (ScriptableObject, Object Pool, Singleton)
 
@@ -145,3 +142,4 @@
 - **빌드·배포 자동화**
   - 태그/브랜치 기준으로 워크플로우를 트리거하여,
     빌드와 배포 과정을 자동화함으로써 반복 작업을 최소화했습니다.
+
